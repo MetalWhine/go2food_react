@@ -10,7 +10,7 @@ import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 
 function ListItemButton({IconImage, text}) {
     return (
-        <button className="rounded-sm py-4 hover:bg-gray-300 w-full active:bg-green-900 active:text-white">
+        <button className="rounded-[10px] py-4 hover:bg-gray-300 w-full active:bg-green-900 active:text-white">
             < IconImage/>
             {text}
         </button>
