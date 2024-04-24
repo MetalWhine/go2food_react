@@ -1,10 +1,35 @@
-import React from "react";
+import {React, useState, useEffect} from "react";
 import CommentOutlinedIcon from '@mui/icons-material/CommentOutlined';
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
+import MoreVertOutlinedIcon from '@mui/icons-material/MoreVertOutlined';
 import "./styles/Appbar.css"
 
+function IconButton ({IconImage}) {
+    return (
+        <div className="p-2 mx-1 hidden sm:block rounded-[12px] hover:bg-gray-300 active:bg-gray-400"> <IconImage /> </div>
+    )
+}
+
+function IconButtonSmallScreen ({IconImage}) {
+    return (
+        <div className="p-2 mx-1 rounded-[12px] hover:bg-gray-300 active:bg-gray-400"> <IconImage /> </div>
+    )
+}
+
+const icon_buttons = [[CommentOutlinedIcon], 
+                      [NotificationsOutlinedIcon],
+                      [SettingsOutlinedIcon]
+                      ]
+
+
+
 function Appbar() {
+    const [IconButtonSmallShown, SetIconButtonSmallShown] = useState(false);
+    const SmallMoreButtonCliked = () => {
+        SetIconButtonSmallShown(!IconButtonSmallShown);
+    }
+
     return (
         // main container
         <div className="bg-white flex justify-between items-center h-16 mx-auto px-4 w-full fixed shadow-md">
@@ -12,16 +37,31 @@ function Appbar() {
 
             {/* left most element (buttons and profile picture) main container */}
             <div className="flex">
-
                 {/* buttons container */}
-                <div className="flex items-center px-4">
-                        <div className="p-2"><CommentOutlinedIcon /></div>
-                        <div className="p-2"><NotificationsOutlinedIcon /></div>
-                        <div className="p-2"><SettingsOutlinedIcon /></div>
+                <div className="flex items-center px-2">
+                        <div onClick={SmallMoreButtonCliked} className="block sm:hidden p-2 rounded-[12px] hover:bg-gray-300 active:bg-gray-400"><MoreVertOutlinedIcon /></div>
+                        {
+                            icon_buttons.map(e => {
+                                return (
+                                    <IconButton IconImage={e[0]} />
+                                )
+                            })
+                        }
                 </div>
 
                 <div className="p-2">
                     <img class="min-h-10 min-w-10 max-w-12 max-h-12 rounded-md" src={"images/profile_picture_default.jpg"} alt="Rounded avatar"></img>
+                </div>
+
+                {/* container of drop down menu items accessibe when screen is small */}
+                <div className={`flex p-1 rounded-b-[12px] flex-col fixed mt-16 bg-white sm:hidden ${IconButtonSmallShown ? "translate-y-0 opacity-100" : "-translate-y-1 opacity-0"} transition-all`}>
+                        {
+                            icon_buttons.map(e => {
+                                return (
+                                    <IconButtonSmallScreen IconImage={e[0]} />
+                                )
+                            })
+                        }
                 </div>
             </div>
         </div>
