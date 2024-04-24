@@ -40,10 +40,11 @@ const list_buttons = [[RestaurantOutlinedIcon, "Dashboard"],
                       [SettingsOutlinedIcon, "Settings"]]
 
 function NavSideBar() {
-    const [NavSideBarShown, SetNavSideBarShown] = useState(true);
-    const [ScreenSizeSmall, SetScreenSizeSmall] = useState(0);
+    const [NavSideBarShown, SetNavSideBarShown] = useState(false);
     const navSideBarMenuSmall = document.getElementById('navSideBarMenuSmall');
-    const navSideBarBurgerButton =  document.getElementById('navSideBarBurgerButton');
+    const [matches, setMatches] = useState(
+        window.matchMedia("(min-width: 640px)").matches
+      )
 
     const navSideBarBurgerButtonCliked = () => {
         SetNavSideBarShown(!NavSideBarShown);
@@ -75,14 +76,24 @@ function NavSideBar() {
             }
         }
     }, [NavSideBarShown]);
-
-    useEffect(() =>{
-        console.log("babi kurma")
-    }, [])
-
+    
+    // check if the screen changed from small screen to big screen
     useEffect(() => {
-        navSideBarBurgerButtonCliked();
-    }, [ScreenSizeSmall])
+    window
+    .matchMedia("(min-width: 640px)")
+    .addEventListener('change', e => {
+        setMatches( e.matches )});
+    }, []);
+
+    // automatically closes the navsidebar when switching to large screen
+    useEffect(() => {
+        if (matches)
+        {
+            SetNavSideBarShown(false);
+        }
+    }, [matches])
+
+    
 
     return (
         <div>

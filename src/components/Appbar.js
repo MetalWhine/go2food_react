@@ -29,6 +29,25 @@ function Appbar() {
     const SmallMoreButtonCliked = () => {
         SetIconButtonSmallShown(!IconButtonSmallShown);
     }
+    const [matches, setMatches] = useState(
+        window.matchMedia("(min-width: 768px)").matches
+      )
+
+    // check if the screen changed from small screen to big screen
+    useEffect(() => {
+        window
+        .matchMedia("(min-width: 640px)")
+        .addEventListener('change', e => {
+            setMatches( e.matches )});
+        }, []);
+    
+        // automatically closes the small button dropdown when switching to large screen
+        useEffect(() => {
+            if (matches)
+            {
+                SetIconButtonSmallShown(false);
+            }
+        }, [matches])
 
     return (
         // main container
