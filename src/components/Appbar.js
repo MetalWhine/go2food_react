@@ -3,7 +3,6 @@ import CommentOutlinedIcon from '@mui/icons-material/CommentOutlined';
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import MoreVertOutlinedIcon from '@mui/icons-material/MoreVertOutlined';
-import "./styles/Appbar.css"
 
 function IconButton ({IconImage}) {
     return (
@@ -51,7 +50,7 @@ function Appbar() {
 
     return (
         // main container
-        <div className="bg-white flex justify-between items-center h-16 mx-auto px-4 w-full fixed shadow-md">
+        <div className="bg-white flex justify-between items-center h-16 mx-auto px-4 w-full fixed shadow-md z-[10]">
             <h1 className="w-full text-3xl font-bold">Go2Food</h1>
 
             {/* left most element (buttons and profile picture) main container */}
@@ -73,7 +72,7 @@ function Appbar() {
                 </div>
 
                 {/* container of drop down menu items accessibe when screen is small */}
-                <div className={`flex p-1 rounded-b-[12px] flex-col fixed mt-16 bg-white sm:hidden ${IconButtonSmallShown ? "translate-y-0 opacity-100" : "-translate-y-1 opacity-0"} transition-all`}>
+                <div className={`flex p-1 rounded-b-[12px] flex-col fixed mt-16 bg-white sm:hidden shadow-xl ${IconButtonSmallShown ? "translate-y-0 opacity-100" : "-translate-y-1 opacity-0"} transition-all`}>
                         {
                             icon_buttons.map(e => {
                                 return (

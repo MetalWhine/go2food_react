@@ -5,12 +5,14 @@ import App from './App';
 import NavSideBar from "./components/NavSideBar"
 import Appbar from './components/Appbar'
 import reportWebVitals from './reportWebVitals';
+import BalanceBanner from './components/BalanceBanner';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <NavSideBar />
     <Appbar />
+    <NavSideBar />
+    <BalanceBanner />
     <App />
   </React.StrictMode>
 );

@@ -94,14 +94,13 @@ function NavSideBar() {
     }, [matches])
 
     
-
     return (
-        <div>
-            <div id="navSideBarBurgerButton" onClick={navSideBarBurgerButtonCliked} className="bg-white ml-2 p-2 fixed mt-[72px] block sm:hidden rounded-[12px] hover:bg-gray-300 active:bg-gray-400">
+        <div className="z-[9]">
+            <div id="navSideBarBurgerButton" onClick={navSideBarBurgerButtonCliked} className="bg-slate-50 ml-2 p-2 fixed mt-[72px] block sm:hidden rounded-[12px] hover:bg-gray-300 active:bg-gray-400 shadow-xl">
                 <MenuOutlinedIcon />
             </div>
 
-            <div id="navSideBarMenuLarge" className=" bg-white fixed mt-16 w-[250px] rounded-br-[20px] hidden sm:block">
+            <div id="navSideBarMenuLarge" className=" bg-white fixed mt-16 w-[250px] rounded-br-[20px] hidden sm:block shadow-xl">
 
                 {/* nav bar buttons div container */}
                 <div className="flex flex-col p-4">
@@ -118,7 +117,7 @@ function NavSideBar() {
                 <Banner />
             </div>
 
-            <div id="navSideBarMenuSmall" className=" bg-white fixed mt-[72px] left-[50%] -translate-x-[50%] w-[250px] rounded-[20px] animate-nav-sidebar-openmenu hidden sm:hidden">
+            <div id="navSideBarMenuSmall" className=" bg-white fixed mt-[72px] left-[50%] -translate-x-[50%] w-[60%] rounded-[20px] animate-nav-bars-menu-popup hidden sm:hidden shadow-xl z-[7]">
 
                 {/* nav bar buttons div container */}
                 <div className="flex flex-col p-4">
