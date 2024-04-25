@@ -107,7 +107,7 @@ function BalanceBanner () {
             </div>
 
             {/* visible only on small screen*/}
-            <div id="BalanceBarSmallScreen" className="bg-green-700 p-1 left-[50%] -translate-x-[50%] fixed mt-[72px] rounded-[12px] shadow-xl animate-nav-bars-menu-popup hidden md:hidden">
+            <div id="BalanceBarSmallScreen" className="bg-green-700 p-1 left-[50%] -translate-x-[50%] fixed mt-[72px] rounded-[12px] shadow-xl animate-nav-bars-menu-popup hidden xl:hidden">
                 <div className="flex">
 
                     {/* balance */}
