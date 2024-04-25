@@ -41,9 +41,9 @@ const list_buttons = [[RestaurantOutlinedIcon, "Dashboard"],
 
 function NavSideBar() {
     const [NavSideBarShown, SetNavSideBarShown] = useState(false);
-    const navSideBarMenuSmall = document.getElementById('navSideBarMenuSmall');
+    const navSideBar = document.getElementById('navSideBar');
     const [matches, setMatches] = useState(
-        window.matchMedia("(min-width: 640px)").matches
+        window.matchMedia("(min-width: 1024px)").matches
       )
 
     const navSideBarBurgerButtonCliked = () => {
@@ -55,8 +55,12 @@ function NavSideBar() {
         {
             try 
             {
-                navSideBarMenuSmall.classList.remove("hidden");
-                navSideBarMenuSmall.classList.remove("sm-hidden");
+                navSideBar.classList.remove("hidden");
+                navSideBar.classList.remove("lg-block");
+                navSideBar.classList.replace("w-[250px]", "w-[50%]");
+                navSideBar.classList.add("left-[50%]");
+                navSideBar.classList.add("-translate-x-[50%]")
+                navSideBar.classList.replace("rounded-br-[20px]", "rounded-[20px]")
             }   
             catch (e)
             {
@@ -67,8 +71,12 @@ function NavSideBar() {
         {
             try 
             {
-                navSideBarMenuSmall.classList.add("hidden");
-                navSideBarMenuSmall.classList.remove("sm-hidden");
+                navSideBar.classList.add("hidden");
+                navSideBar.classList.add("lg-block");
+                navSideBar.classList.replace("w-[50%]", "w-[250px]");
+                navSideBar.classList.remove("left-[50%]");
+                navSideBar.classList.remove("-translate-x-[50%]")
+                navSideBar.classList.replace("rounded-[20px]", "rounded-br-[20px]")
             }
             catch (e)
             {
@@ -80,7 +88,7 @@ function NavSideBar() {
     // check if the screen changed from small screen to big screen
     useEffect(() => {
     window
-    .matchMedia("(min-width: 640px)")
+    .matchMedia("(min-width: 1024px)")
     .addEventListener('change', e => {
         setMatches( e.matches )});
     }, []);
@@ -96,11 +104,11 @@ function NavSideBar() {
     
     return (
         <div className="z-[9]">
-            <div id="navSideBarBurgerButton" onClick={navSideBarBurgerButtonCliked} className="bg-slate-50 ml-2 p-2 fixed mt-[72px] block sm:hidden rounded-[12px] hover:bg-gray-300 active:bg-gray-400 shadow-xl">
+            <div id="navSideBarBurgerButton" onClick={navSideBarBurgerButtonCliked} className="bg-slate-50 ml-2 p-2 fixed mt-[72px] block lg:hidden rounded-[12px] hover:bg-gray-300 active:bg-gray-400 shadow-xl">
                 <MenuOutlinedIcon />
             </div>
 
-            <div id="navSideBarMenuLarge" className=" bg-white fixed mt-16 w-[250px] rounded-br-[20px] hidden sm:block shadow-xl">
+            <div id="navSideBar" className=" bg-white fixed mt-16 w-[250px] rounded-br-[20px] hidden lg:block shadow-xl z-[7]">
 
                 {/* nav bar buttons div container */}
                 <div className="flex flex-col p-4">
@@ -116,24 +124,6 @@ function NavSideBar() {
                 {/* nav bar banner container? */}
                 <Banner />
             </div>
-
-            <div id="navSideBarMenuSmall" className=" bg-white fixed mt-[72px] left-[50%] -translate-x-[50%] w-[60%] rounded-[20px] animate-nav-bars-menu-popup hidden sm:hidden shadow-xl z-[7]">
-
-                {/* nav bar buttons div container */}
-                <div className="flex flex-col p-4">
-                    {
-                        list_buttons.map(e => {
-                            return (
-                                <ListItemButton IconImage={e[0]} text={e[1]}/>
-                            )
-                        })
-                    }
-                </div>
-
-                {/* nav bar banner container? */}
-                <Banner />
-            </div>
-
         </div>
     )
 }

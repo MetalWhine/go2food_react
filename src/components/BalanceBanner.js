@@ -7,7 +7,7 @@ function BalanceBanner () {
     const [BalanceBarShown, SetBalanceBarShown] = useState(false);
     const BalanceBarSmallScreen = document.getElementById('BalanceBarSmallScreen');
     const [matches, setMatches] = useState(
-        window.matchMedia("(min-width: 640px)").matches
+        window.matchMedia("(min-width: 768px)").matches
       )
 
     const balanceBarToggleClicked = () => {
@@ -44,7 +44,7 @@ function BalanceBanner () {
     // check if the screen changed from small screen to big screen
     useEffect(() => {
     window
-    .matchMedia("(min-width: 640px)")
+    .matchMedia("(min-width: 768px)")
     .addEventListener('change', e => {
         setMatches( e.matches )});
     }, []);
@@ -61,12 +61,12 @@ function BalanceBanner () {
         // main container
         <div>
             {/* button to toggle balance bar while in small devices*/}
-            <div onClick={balanceBarToggleClicked} className="bg-green-700 right-[16px] text-white p-2 fixed mt-[72px] block sm:hidden rounded-[12px] hover:bg-green-800 active:bg-green-900 shadow-xl">
+            <div onClick={balanceBarToggleClicked} className="bg-green-700 right-[8px] text-white p-2 fixed mt-[72px] block md:hidden rounded-[12px] hover:bg-green-800 active:bg-green-900 shadow-xl">
                 <LocalAtmOutlinedIcon />
             </div>
 
             {/* visibe only on big screen*/}
-            <div className="bg-green-700 hidden sm:block p-1 right-[16px] fixed mt-[72px] rounded-[12px] shadow-xl">
+            <div className="bg-green-700 hidden md:block p-1 right-[16px] fixed mt-[72px] rounded-[12px] shadow-xl">
                 <div className="flex">
 
                     {/* balance */}
@@ -107,7 +107,7 @@ function BalanceBanner () {
             </div>
 
             {/* visible only on small screen*/}
-            <div id="BalanceBarSmallScreen" className="bg-green-700 p-1 left-[50%] -translate-x-[50%] fixed mt-[72px] rounded-[12px] shadow-xl animate-nav-bars-menu-popup hidden sm:hidden">
+            <div id="BalanceBarSmallScreen" className="bg-green-700 p-1 left-[50%] -translate-x-[50%] fixed mt-[72px] rounded-[12px] shadow-xl animate-nav-bars-menu-popup hidden md:hidden">
                 <div className="flex">
 
                     {/* balance */}
