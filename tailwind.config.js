@@ -6,13 +6,13 @@ module.exports = {
   theme: {
     extend: {
       keyframes: {
-          'nav-sidebar-openmenu': {
+          'nav-bars-menu-popup': {
             '0%' : {opacity: 0},
             '100%': {opacity: 1}
           },
       },
       animation: {
-        'nav-sidebar-openmenu': 'nav-sidebar-openmenu 0.5s ease-in-out forwards',
+        'nav-bars-menu-popup': 'nav-bars-menu-popup 0.250s ease-in-out forwards',
       }
     }
   },
