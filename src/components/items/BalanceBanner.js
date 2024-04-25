@@ -1,13 +1,13 @@
 import {React, useState, useEffect} from "react";
 import VerticalAlignTopOutlinedIcon from '@mui/icons-material/VerticalAlignTopOutlined';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
-import LocalAtmOutlinedIcon from '@mui/icons-material/LocalAtmOutlined';
+import AccountBalanceWalletRoundedIcon from '@mui/icons-material/AccountBalanceWalletRounded';
 
 function BalanceBanner () {
     const [BalanceBarShown, SetBalanceBarShown] = useState(false);
     const BalanceBarSmallScreen = document.getElementById('BalanceBarSmallScreen');
     const [matches, setMatches] = useState(
-        window.matchMedia("(min-width: 768px)").matches
+        window.matchMedia("(min-width: 1280px)").matches
       )
 
     const balanceBarToggleClicked = () => {
@@ -20,7 +20,7 @@ function BalanceBanner () {
             try 
             {
                 BalanceBarSmallScreen.classList.remove("hidden");
-                BalanceBarSmallScreen.classList.remove("sm-hidden");
+                BalanceBarSmallScreen.classList.remove("xl-hidden");
             }   
             catch (e)
             {
@@ -32,7 +32,7 @@ function BalanceBanner () {
             try 
             {
                 BalanceBarSmallScreen.classList.add("hidden");
-                BalanceBarSmallScreen.classList.remove("sm-hidden");
+                BalanceBarSmallScreen.classList.remove("xl-hidden");
             }
             catch (e)
             {
@@ -44,7 +44,7 @@ function BalanceBanner () {
     // check if the screen changed from small screen to big screen
     useEffect(() => {
     window
-    .matchMedia("(min-width: 768px)")
+    .matchMedia("(min-width: 1280px)")
     .addEventListener('change', e => {
         setMatches( e.matches )});
     }, []);
@@ -61,12 +61,12 @@ function BalanceBanner () {
         // main container
         <div>
             {/* button to toggle balance bar while in small devices*/}
-            <div onClick={balanceBarToggleClicked} className="bg-green-700 right-[8px] text-white p-2 fixed mt-[72px] block md:hidden rounded-[12px] hover:bg-green-800 active:bg-green-900 shadow-xl">
-                <LocalAtmOutlinedIcon />
+            <div onClick={balanceBarToggleClicked} className="bg-green-700 right-[8px] text-white p-2 fixed mt-[72px] block xl:hidden rounded-[12px] hover:bg-green-800 active:bg-green-900 shadow-xl">
+                <AccountBalanceWalletRoundedIcon />
             </div>
 
             {/* visibe only on big screen*/}
-            <div className="bg-green-700 hidden md:block p-1 right-[16px] fixed mt-[72px] rounded-[12px] shadow-xl">
+            <div className="bg-green-700 hidden xl:block p-1 right-[16px] fixed mt-[72px] rounded-[12px] shadow-xl">
                 <div className="flex">
 
                     {/* balance */}
