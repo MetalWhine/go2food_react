@@ -68,7 +68,7 @@ function Appbar() {
                 </div>
 
                 <div className="p-2">
-                    <img class="min-h-10 min-w-10 max-w-12 max-h-12 rounded-md" src={"images/profile_picture_default.jpg"} alt="Rounded avatar"></img>
+                    <img className="min-h-10 min-w-10 max-w-12 max-h-12 rounded-md" src={"images/profile_picture_default.jpg"} alt="Rounded avatar"></img>
                 </div>
 
                 {/* container of drop down menu items accessibe when screen is small */}
