@@ -1,17 +1,8 @@
 import React from 'react';
 import '../../index.css';
 import HorizontalScroll from '../complex-items/HorizontalScroll';
-
-function CategoryCard ({name}) {
-    return (
-        <div className='flex justify-center items-center bg-green-600 text-white p-3 mr-2 rounded-md hover:bg-green-700 active:bg-green-800 md:min-w-[100px] md:min-h-[100px] sm:min-w-[90px] sm:min-h-[90px] min-w-[80px] min-h-[80px]'>
-            <div className="items-center justify-center m-auto">
-                <img className="md:h-12 md:w-12 sm:h-11 sm:w-11 h-10 w-10 mx-auto pointer-events-none" src={`images/food-categories/${name}.png`} alt="Category Icons"></img>
-                <p className="text-center text-xs sm:text-sm md:text-base">{name}</p>
-            </div>
-        </div>
-    )
-}
+import CategoryCard from '../items/CategoryCard';
+import RestaurantCard from '../items/RestaurantCard';
 
 const list_categories = [
                          ["Burgers"], 
@@ -21,6 +12,15 @@ const list_categories = [
                          ["Pizzas"],
                          ["Beverages"],
                         ]
+
+const list_restaurants = [
+    ["Legendary Laksa", 0.60, 4.6, "images/restaurant-templates/laksa.png"], 
+    ["Ayam Goreng Mas Ganjar", 1.60, 4.2, "images/restaurant-templates/ayam-goreng.png"],
+    ["Mie Bakso Pak Kumis", 0.83, 5.0, "images/restaurant-templates/mie-bakso.png"],
+    ["Nasi Lemak Uncle Ato", 2.50, 4.5, "images/restaurant-templates/nasi-lemak.png"],
+    ["Nasi Ayam Pak Jarwo", 0.69, 4.8, "images/restaurant-templates/nasi-ayam.png"],
+    ["Soto Ayam Madura Mas Tretan", 1.89, 4.1, "images/restaurant-templates/soto-ayam.png"],
+    ]
 
 function Dashboard () {
     const first_name = 'user';
@@ -32,7 +32,7 @@ function Dashboard () {
                 <div className='md:p-4 sm:p-2 flex flex-[1] items-center justify-center md:justify-start'>
                     <p className="text-center text-lg sm:text-xl md:text-2xl font-bold">Welcome, {first_name}!</p>
                 </div>
-                <div className='py-2 md:px-2 md:py-2 flex flex-[2.5] items-center justify-center'> 
+                <div className='py-2 md:px-2 md:py-2 flex min-[810px]:flex-[2] min-[1560px]:flex-[3] min-[1300px]:flex-[4] items-center justify-center'> 
                     <input type="text" id="food_search" class="py-2 px-2 bg-white border w-full border-black text-md sm:text-xl md:text-2xl text-gray-900 rounded-[24px]" placeholder="🔍 search for food"/>
                 </div>
             </div>
@@ -47,7 +47,7 @@ function Dashboard () {
             {/*Categories container*/}
             <div className="mx-[12.5%] sm:mx-[15%] py-2 m-2">
                 <h1 className="font-bold text-lg sm:text-xl md:text-2xl">Categories</h1>
-                <HorizontalScroll className={"no-scrollbar select-none py-4"}>
+                <HorizontalScroll className={"no-scrollbar select-none my-4 rounded-lg"}>
                     {
                         list_categories.map(e => {
                             return (
@@ -57,6 +57,35 @@ function Dashboard () {
                     }
                 </HorizontalScroll>
             </div>
+            
+            {/*Recommended Foods container*/}
+            <div className="mx-[12.5%] sm:mx-[15%] py-2 m-2">
+                <h1 className="font-bold text-lg sm:text-xl md:text-2xl">Recommended Foods</h1>
+                <HorizontalScroll className={"no-scrollbar select-none my-4 rounded-lg"}>
+                    {
+                        list_restaurants.map(e => {
+                            return (
+                                <RestaurantCard name={e[0]} range={e[1]} rating={e[2]} img_url={e[3]} />
+                            )
+                        })
+                    }
+                </HorizontalScroll>
+            </div>
+
+            {/*Recent Orders*/}
+            <div className="mx-[12.5%] sm:mx-[15%] py-2 m-2">
+                <h1 className="font-bold text-lg sm:text-xl md:text-2xl">Recent Orders</h1>
+                <HorizontalScroll className={"no-scrollbar select-none my-4 rounded-lg"}>
+                    {
+                        list_restaurants.map(e => {
+                            return (
+                                <RestaurantCard name={e[0]} range={e[1]} rating={e[2]} img_url={e[3]} />
+                            )
+                        })
+                    }
+                </HorizontalScroll>
+            </div>
+
         </div>
     )
 }
