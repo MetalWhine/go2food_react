@@ -10,6 +10,7 @@ import Favorites from "./components/pages/Favorites";
 import Bills from "./components/pages/Bills";
 import Invalid from "./components/pages/Invalid";
 import History from "./components/pages/History";
+import Login from "./components/pages/Login";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
               <Route exact path='/history' element={<History />} />
             </Route>
             <Route element={<WithoutNavbar />}>
+              <Route exact path='login' element={<Login />} />
               <Route exact path='*' element={<Invalid />} />
             </Route>
           </Routes>
