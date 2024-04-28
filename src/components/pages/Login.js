@@ -52,7 +52,7 @@ function Login () {
     return (  
         <div className="flex h-[100vh] w-full flex-col bg-gray-100 py-10">
             {/* Login form */}
-            <form className="flex flex-col px-6 py-6 text-center mx-auto my-[40px] bg-white rounded-xl md:w-[500px] w-[350px] shadow-lg" noValidate>
+            <form onSubmit={handleSubmit} className="flex flex-col px-6 py-6 text-center mx-auto my-[40px] bg-white rounded-xl md:w-[500px] w-[350px] shadow-lg" noValidate>
 
                 {/* login info */}
                 <div className="my-2">
@@ -101,7 +101,7 @@ function Login () {
                 </div>
 
                 {/* Sign in Button*/}
-                <button onClick={handleSubmit} className="max-w-[250px] min-w-[250px] mx-auto px-6 py-5 mb-5 text-sm font-bold leading-none text-white transition duration-300 md:w-96 rounded-2xl hover:bg-green-700 bg-green-600">Sign In</button>
+                <button type="submit" className="max-w-[250px] min-w-[250px] mx-auto px-6 py-5 mb-5 text-sm font-bold leading-none text-white transition duration-300 md:w-96 rounded-2xl hover:bg-green-700 bg-green-600">Sign In</button>
 
                 {/* not registered text and create an account button*/}
                 <div className="flex flex-row mx-auto">

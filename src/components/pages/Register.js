@@ -32,7 +32,6 @@ function Register () {
         let emailValid = true;
         let passwordValid = true;
         let confirmPasswordValid = true;
-        console.log(isValidEmailAddress(emailRef.current.value.trim()))
 
         if (!isValidEmailAddress(emailRef.current.value.trim()))
         {
@@ -107,7 +106,7 @@ function Register () {
                 </div>
 
                 {/* Register Button*/}
-                <button className="max-w-[250px] min-w-[250px] mx-auto px-6 py-5 my-3 text-sm font-bold leading-none text-white transition duration-300 md:w-96 rounded-2xl hover:bg-green-700 focus:ring-4 focus:ring-purple-100 bg-green-600">Register</button>
+                <button type={"submit"} className="max-w-[250px] min-w-[250px] mx-auto px-6 py-5 my-3 text-sm font-bold leading-none text-white transition duration-300 md:w-96 rounded-2xl hover:bg-green-700 focus:ring-4 focus:ring-purple-100 bg-green-600">Register</button>
                 
                 <div className="flex flex-row mx-auto">
                     <p className="text-sm leading-relaxed text-gray-900 mr-2">Already registered?</p>
