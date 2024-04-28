@@ -3,23 +3,25 @@ import { useNavigate } from 'react-router-dom'
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
-function Login () {
+function Register () {
     const navigate = useNavigate()
-    const [keepLoggedIn, SetKeepLoggedIn] = useState(false);
     const [emailInvalid, SetEmailInvalid] = useState(false);
     const [passwordInvalid, SetPasswordInvalid] = useState(false);
+    const [ConfirmPasswordInvalid, SetConfirmPasswordInvalid] = useState(false);
     const [showPassword, SetShowPassword] = useState(false);
+    const [showConfirmPassword, SetShowConfirmPassword] = useState(false);
 
     const ToggleShowPassword = () => {
         SetShowPassword(!showPassword)
     }
 
-    const ToggleKeepLoggedIn = () => {
-        SetKeepLoggedIn(!keepLoggedIn);
+    const ToggleShowConfirmPassword = () => {
+        SetShowConfirmPassword(!showConfirmPassword)
     }
 
     const emailRef = useRef(null);
     const passwordRef = useRef(null);
+    const confirmPasswordRef = useRef(null);;
 
     function isValidEmailAddress(address) {
         return !! address.match(/.+@.+/);
@@ -29,6 +31,7 @@ function Login () {
         event.preventDefault();
         let emailValid = true;
         let passwordValid = true;
+        let confirmPasswordValid = true;
         console.log(isValidEmailAddress(emailRef.current.value.trim()))
 
         if (!isValidEmailAddress(emailRef.current.value.trim()))
@@ -43,24 +46,30 @@ function Login () {
             passwordValid = false;
         }
 
-        if (emailValid && passwordValid)
+        if (confirmPasswordRef.current.value.trim() !== passwordRef.current.value.trim())
         {
-            navigate("/");
+            SetConfirmPasswordInvalid(true);
+            confirmPasswordValid = false;
+        }
+
+        if (emailValid && passwordValid && confirmPasswordValid)
+        {
+            navigate("/login");
         }
     }
 
     return (  
         <div className="flex h-[100vh] w-full flex-col bg-gray-100 py-10">
             {/* Login form */}
-            <form className="flex flex-col px-6 py-6 text-center mx-auto my-[40px] bg-white rounded-xl md:w-[500px] w-[350px] shadow-lg" noValidate>
+            <form onSubmit={handleSubmit} className="flex flex-col px-6 py-6 text-center mx-auto my-[40px] bg-white rounded-xl md:w-[500px] w-[350px] shadow-lg" noValidate>
 
                 {/* login info */}
                 <div className="my-2">
-                    <p className="mb-3 text-4xl font-extrabold text-dark-grey-900">Sign In</p>
-                    <p className="mb-4 text-grey-700">Enter your email and password</p>
+                    <p className="mb-3 text-4xl font-extrabold text-dark-grey-900">Register</p>
+                    <p className="mb-4 text-grey-700">Create your account</p>
                 </div>
 
-                {/* login fields */}
+                {/* register fields */}
 
                 {/* email field */}
                 <div className="flex flex-col mb-5">
@@ -82,32 +91,28 @@ function Login () {
                         <p for="password" className="relative text-start hidden text-pink-600 peer-required:block text-sm px-2 animate-nav-bars-menu-popup">Please provide a password.</p>
                     </div>
                 </div>
-
-                {/* keep me logged in and forgot password button*/}
-                <div className="flex flex-row justify-between mb-8">
-                    {/* keep me logged in tick */}
-                    <label className="relative inline-flex items-center mr-3 cursor-pointer select-none">
-                        <input onClick={ToggleKeepLoggedIn} type="checkbox" checked={keepLoggedIn} className="sr-only peer"/>
-                        <div className="w-5 h-5 bg-white hover:bg-gray-300 border-2 rounded-sm border-gray-500 peer-checked:border-0 peer-checked:bg-green-600">
-                            <img className="" src="https://raw.githubusercontent.com/Loopple/loopple-public-assets/main/motion-tailwind/img/icons/check.png" alt="tick"/>
-                        </div>
-                        <span className="ml-3 text-sm font-normal text-gray-900">Keep me logged in</span>
-                    </label>
-
-                    {/* forgot password */}
-                    <button>
-                        <p className="mr-4 text-sm font-medium text-green-800 hover:underline">Forgot password?</p>
-                    </button>
+                
+                {/* confirm password field */}
+                <div className="flex flex-col mb-5">
+                    <label for="confirm_password" className="mb-2 text-sm text-start text-grey-900">Confirm Password</label>
+                    <div className="relative">
+                        <input id="confirm_password" ref={confirmPasswordRef} required={ConfirmPasswordInvalid} type={showConfirmPassword ? "text" : "password"} placeholder="Confirm Password" className="flex items-center w-full pl-5 pr-10 py-4 mr-2 text-sm font-medium outline-none focus:bg-gray-300 placeholder:text-gray-700 bg-gray-200 text-dark-gray-900 rounded-2xl peer"/>
+                        {showConfirmPassword ? 
+                            <VisibilityOffIcon className={`absolute right-2 -translate-y-[50%] peer-required:-translate-y-[90%] top-[50%] text-gray-400 hover:text-gray-500`} onClick={ToggleShowConfirmPassword}/>
+                            :
+                            <VisibilityIcon className={`absolute right-2 -translate-y-[50%] peer-required:-translate-y-[90%] top-[50%] text-gray-400 hover:text-gray-500`} onClick={ToggleShowConfirmPassword}/>
+                        }
+                        <p for="confirm_password" className="relative text-start hidden text-pink-600 peer-required:block text-sm px-2 animate-nav-bars-menu-popup">Password doesn't match</p>
+                    </div>
                 </div>
 
-                {/* Sign in Button*/}
-                <button onClick={handleSubmit} className="max-w-[250px] min-w-[250px] mx-auto px-6 py-5 mb-5 text-sm font-bold leading-none text-white transition duration-300 md:w-96 rounded-2xl hover:bg-green-700 bg-green-600">Sign In</button>
-
-                {/* not registered text and create an account button*/}
+                {/* Register Button*/}
+                <button className="max-w-[250px] min-w-[250px] mx-auto px-6 py-5 my-3 text-sm font-bold leading-none text-white transition duration-300 md:w-96 rounded-2xl hover:bg-green-700 focus:ring-4 focus:ring-purple-100 bg-green-600">Register</button>
+                
                 <div className="flex flex-row mx-auto">
-                    <p className="text-sm leading-relaxed text-gray-900 mr-2">Not registered yet?</p>
-                    <button onClick={() => navigate('/register')}>
-                        <p className="text-sm font-bold text-grey-700 hover:underline">Create an Account</p>
+                    <p className="text-sm leading-relaxed text-gray-900 mr-2">Already registered?</p>
+                    <button onClick={() => navigate("/login")}>
+                        <p className="text-sm font-bold text-grey-700 hover:underline">Sign in</p>
                     </button>
                 </div>
 
@@ -129,4 +134,4 @@ function Login () {
     )
 }
 
-export default Login;
+export default Register;
