@@ -12,6 +12,7 @@ import Invalid from "./components/pages/Invalid";
 import History from "./components/pages/History";
 import Login from "./components/pages/Login";
 import Register from "./components/pages/Register";
+import RequireAuth from "./components/functions/RequireAuth";
 
 function App() {
   return (
@@ -19,7 +20,7 @@ function App() {
       <BrowserRouter>
           <Routes>
             <Route element={<WithNavbar />}>
-              <Route exact path='/' element={<Dashboard />} />
+              <Route exact path='/' element={<RequireAuth><Dashboard /></RequireAuth>} />
               <Route exact path='/orders' element={<FoodOrder />} />
               <Route exact path='/messages' element={<Messages />} />
               <Route exact path='/settings' element={<Settings />} />

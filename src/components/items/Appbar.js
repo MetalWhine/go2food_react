@@ -74,7 +74,9 @@ function Appbar() {
                 </div>
 
                 <div className="p-2">
-                    <img onClick={navigateMe} className="min-h-10 min-w-10 max-w-12 max-h-12 rounded-md" src={"images/profile_picture_default.jpg"} alt="Rounded avatar"></img>
+                    <div className="hover:text-gray-400">
+                        <img onClick={navigateMe} className="min-h-10 min-w-10 max-w-12 max-h-12 rounded-md" src={"images/profile_picture_default.jpg"} alt="Rounded avatar"></img>
+                    </div>
                 </div>
 
                 {/* container of drop down menu items accessibe when screen is small */}

@@ -2,8 +2,13 @@ import {React, useState, useRef} from "react";
 import { useNavigate } from 'react-router-dom'
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import axios from 'axios';
+import { wait } from "../utils/Functionabilities";
+import Cookies from "universal-cookie";
 
 function Login () {
+
+    const cookies = new Cookies();
     const navigate = useNavigate()
     const [keepLoggedIn, SetKeepLoggedIn] = useState(false);
     const [emailInvalid, SetEmailInvalid] = useState(false);
@@ -25,11 +30,40 @@ function Login () {
         return !! address.match(/.+@.+/);
     }
 
+    
+
+    const Login = async () => {
+        await axios.post('http://localhost:8000/login/', {
+            email: emailRef.current.value.trim(),
+            password: passwordRef.current.value.trim()
+        })
+        .then(async function (response) {
+            if (response.data["detail"] === "account not found") 
+            {
+                alert("Login failed");
+            }
+            else if (response.data["detail"] === "password doesn't match")
+            {
+                alert("Login failed")
+            }
+            else 
+            { 
+                if(response.data["detail"]){
+                    cookies.set("jwt_auth", response.data["detail"], {"sameSite": "unset"})
+                    await wait(300);
+                    navigate("/");
+                }
+            }
+        })
+        .catch(function (error) {
+            console.log(error, 'error');
+        });
+    }
+
     function handleSubmit(event) {
         event.preventDefault();
         let emailValid = true;
         let passwordValid = true;
-        console.log(isValidEmailAddress(emailRef.current.value.trim()))
 
         if (!isValidEmailAddress(emailRef.current.value.trim()))
         {
@@ -45,7 +79,7 @@ function Login () {
 
         if (emailValid && passwordValid)
         {
-            navigate("/");
+            Login();
         }
     }
 
@@ -64,14 +98,14 @@ function Login () {
 
                 {/* email field */}
                 <div className="flex flex-col mb-5">
-                    <label for="email" className="mb-2 text-sm text-start text-grey-900">Email</label>
+                    <label htmlFor="email" className="mb-2 text-sm text-start text-grey-900">Email</label>
                     <input id="email" type="email" ref={emailRef} required={emailInvalid} placeholder="Email" className="w-full px-5 py-4 mr-2 text-sm font-medium outline-none focus:bg-gray-300 placeholder:text-gray-700 bg-gray-200 text-dark-gray-900 rounded-2xl peer"/>
-                    <p for="email" className="text-start hidden peer-required:block peer-invalid:block text-pink-600 text-sm px-2 animate-nav-bars-menu-popup">Please provide a valid email address.</p>
+                    <p htmlFor="email" className="text-start hidden peer-required:block peer-invalid:block text-pink-600 text-sm px-2 animate-nav-bars-menu-popup">Please provide a valid email address.</p>
                 </div>
 
                 {/* password field */}
                 <div className="flex flex-col mb-5">
-                    <label for="password" className="mb-2 text-sm text-start text-grey-900">Password</label>
+                    <label htmlFor="password" className="mb-2 text-sm text-start text-grey-900">Password</label>
                     <div className="relative">
                         <input id="password" ref={passwordRef} required={passwordInvalid} type={showPassword ? "text" : "password"} placeholder="Password" className="flex items-center w-full pl-5 pr-10 py-4 mr-2 text-sm font-medium outline-none focus:bg-gray-300 placeholder:text-gray-700 bg-gray-200 text-dark-gray-900 rounded-2xl peer"/>
                         {showPassword ? 
@@ -79,7 +113,7 @@ function Login () {
                             :
                             <VisibilityIcon className={`absolute right-2 -translate-y-[50%] peer-required:-translate-y-[90%] top-[50%] text-gray-400 hover:text-gray-500`} onClick={ToggleShowPassword}/>
                         }
-                        <p for="password" className="relative text-start hidden text-pink-600 peer-required:block text-sm px-2 animate-nav-bars-menu-popup">Please provide a password.</p>
+                        <p htmlFor="password" className="relative text-start hidden text-pink-600 peer-required:block text-sm px-2 animate-nav-bars-menu-popup">Please provide a password.</p>
                     </div>
                 </div>
 
@@ -87,7 +121,7 @@ function Login () {
                 <div className="flex flex-row justify-between mb-8">
                     {/* keep me logged in tick */}
                     <label className="relative inline-flex items-center mr-3 cursor-pointer select-none">
-                        <input onClick={ToggleKeepLoggedIn} type="checkbox" checked={keepLoggedIn} className="sr-only peer"/>
+                        <input onChange={ToggleKeepLoggedIn} type="checkbox" checked={keepLoggedIn} className="sr-only peer"/>
                         <div className="w-5 h-5 bg-white hover:bg-gray-300 border-2 rounded-sm border-gray-500 peer-checked:border-0 peer-checked:bg-green-600">
                             <img className="" src="https://raw.githubusercontent.com/Loopple/loopple-public-assets/main/motion-tailwind/img/icons/check.png" alt="tick"/>
                         </div>
