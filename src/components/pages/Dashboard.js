@@ -27,69 +27,66 @@ function Dashboard () {
     const first_name = 'user';
 
     return (
-        <div>
-            <Navbar />
-            <div className="pt-[72px]">
-                {/* welcome message + search bar */}
-                <div className="flex flex-col md:flex-row py-2 mx-[12.5%] sm:mx-[15%]">
-                    <div className='md:p-4 sm:p-2 flex flex-[1] items-center justify-center md:justify-start'>
-                        <p className="text-center text-lg sm:text-xl md:text-2xl font-bold">Welcome, {first_name}!</p>
-                    </div>
-                    <div className='py-2 md:px-2 md:py-2 flex min-[810px]:flex-[2] min-[1560px]:flex-[3] min-[1300px]:flex-[4] items-center justify-center'> 
-                        <input type="text" id="food_search" className="py-2 px-2 bg-white border w-full border-black text-md sm:text-xl md:text-2xl text-gray-900 rounded-[24px]" placeholder="🔍 search for food"/>
-                    </div>
+        <div className="pt-[72px]">
+            {/* welcome message + search bar */}
+            <div className="flex flex-col md:flex-row py-2 mx-[12.5%] sm:mx-[15%]">
+                <div className='md:p-4 sm:p-2 flex flex-[1] items-center justify-center md:justify-start'>
+                    <p className="text-center text-lg sm:text-xl md:text-2xl font-bold">Welcome, {first_name}!</p>
                 </div>
-                
-                {/* Discount info*/}
-                <div className="bg-green-600 text-white mx-[12.5%] sm:mx-[15%] p-2 m-2 rounded-lg">
-                    <h1 className="text-lg sm:text-xl md:text-2xl font-bold">Get Discount Voucher</h1>
-                    <h1 className="text-lg sm:text-xl md:text-2xl font-bold">Up to 20%</h1>
-                    <h2 className="text-xs sm:text-sm md:text-base"> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt. </h2>
+                <div className='py-2 md:px-2 md:py-2 flex min-[810px]:flex-[2] min-[1560px]:flex-[3] min-[1300px]:flex-[4] items-center justify-center'> 
+                    <input type="text" id="food_search" className="py-2 px-2 bg-white border w-full border-black text-md sm:text-xl md:text-2xl text-gray-900 rounded-[24px]" placeholder="🔍 search for food"/>
                 </div>
-
-                {/*Categories container*/}
-                <div className="mx-[12.5%] sm:mx-[15%] py-2 m-2">
-                    <h1 className="font-bold text-lg sm:text-xl md:text-2xl">Categories</h1>
-                    <HorizontalScroll className={"no-scrollbar select-none my-4 rounded-lg"}>
-                        {
-                            list_categories.map(e => {
-                                return (
-                                    <CategoryCard name={e[0]} />
-                                )
-                            })
-                        }
-                    </HorizontalScroll>
-                </div>
-                
-                {/*Recommended Foods container*/}
-                <div className="mx-[12.5%] sm:mx-[15%] py-2 m-2">
-                    <h1 className="font-bold text-lg sm:text-xl md:text-2xl">Recommended Foods</h1>
-                    <HorizontalScroll className={"no-scrollbar select-none my-4 rounded-lg"}>
-                        {
-                            list_restaurants.map(e => {
-                                return (
-                                    <RestaurantCard name={e[0]} range={e[1]} rating={e[2]} img_url={e[3]} />
-                                )
-                            })
-                        }
-                    </HorizontalScroll>
-                </div>
-
-                {/*Recent Orders*/}
-                <div className="mx-[12.5%] sm:mx-[15%] py-2 m-2">
-                    <h1 className="font-bold text-lg sm:text-xl md:text-2xl">Recent Orders</h1>
-                    <HorizontalScroll className={"no-scrollbar select-none my-4 rounded-lg"}>
-                        {
-                            list_restaurants.map(e => {
-                                return (
-                                    <RestaurantCard name={e[0]} range={e[1]} rating={e[2]} img_url={e[3]} />
-                                )
-                            })
-                        }
-                    </HorizontalScroll>
-                </div>
-
             </div>
+            
+            {/* Discount info*/}
+            <div className="bg-green-600 text-white mx-[12.5%] sm:mx-[15%] p-2 m-2 rounded-lg">
+                <h1 className="text-lg sm:text-xl md:text-2xl font-bold">Get Discount Voucher</h1>
+                <h1 className="text-lg sm:text-xl md:text-2xl font-bold">Up to 20%</h1>
+                <h2 className="text-xs sm:text-sm md:text-base"> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt. </h2>
+            </div>
+
+            {/*Categories container*/}
+            <div className="mx-[12.5%] sm:mx-[15%] py-2 m-2">
+                <h1 className="font-bold text-lg sm:text-xl md:text-2xl">Categories</h1>
+                <HorizontalScroll className={"no-scrollbar select-none my-4 rounded-lg"}>
+                    {
+                        list_categories.map(e => {
+                            return (
+                                <CategoryCard name={e[0]} />
+                            )
+                        })
+                    }
+                </HorizontalScroll>
+            </div>
+            
+            {/*Recommended Foods container*/}
+            <div className="mx-[12.5%] sm:mx-[15%] py-2 m-2">
+                <h1 className="font-bold text-lg sm:text-xl md:text-2xl">Recommended Foods</h1>
+                <HorizontalScroll className={"no-scrollbar select-none my-4 rounded-lg"}>
+                    {
+                        list_restaurants.map(e => {
+                            return (
+                                <RestaurantCard name={e[0]} range={e[1]} rating={e[2]} img_url={e[3]} />
+                            )
+                        })
+                    }
+                </HorizontalScroll>
+            </div>
+
+            {/*Recent Orders*/}
+            <div className="mx-[12.5%] sm:mx-[15%] py-2 m-2">
+                <h1 className="font-bold text-lg sm:text-xl md:text-2xl">Recent Orders</h1>
+                <HorizontalScroll className={"no-scrollbar select-none my-4 rounded-lg"}>
+                    {
+                        list_restaurants.map(e => {
+                            return (
+                                <RestaurantCard name={e[0]} range={e[1]} rating={e[2]} img_url={e[3]} />
+                            )
+                        })
+                    }
+                </HorizontalScroll>
+            </div>
+
         </div>
     )
 }

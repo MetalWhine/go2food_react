@@ -44,7 +44,7 @@ function Login() {
                 }
                 else {
                     if (response.data["detail"]) {
-                        cookies.set("jwt_auth", response.data["detail"], { "sameSite": "lax" })
+                        cookies.set("jwt_auth", response.data["detail"], { "sameSite": "strict", "secure":"true" })
                         await wait(300);
                         navigate("/");
                     }

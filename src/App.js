@@ -1,7 +1,5 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import WithNavbar from "./components/router-elements/WithNavbar";
-import WithoutNavbar from "./components/router-elements/WithoutNavbar";
 import Dashboard from "./components/pages/Dashboard";
 import Messages from "./components/pages/Messages";
 import Settings from "./components/pages/Settings";
@@ -12,26 +10,27 @@ import Invalid from "./components/pages/Invalid";
 import History from "./components/pages/History";
 import Login from "./components/pages/Login";
 import Register from "./components/pages/Register";
-import RequireAuth from "./components/functions/RequireAuth";
+import RequireAuthWithNavbar from "./components/wrappers/RequireAuthWithNavbar";
+import RequireAuth from "./components/wrappers/RequireAuth";
+import NoAuthWithNavbar from "./components/wrappers/NoAuthWithNavbar";
 
 function App() {
   return (
     <BrowserRouter>
         <Routes>
-          <Route element={<WithNavbar />}>
-            <Route exact path='/orders' element={<FoodOrder />} />
-            <Route exact path='/messages' element={<Messages />} />
-            <Route exact path='/settings' element={<Settings />} />
-            <Route exact path='/Bills' element={<Bills />} />
-            <Route exact path='/favorites' element={<Favorites />} />
-            <Route exact path='/history' element={<History />} />
-          </Route>
-          <Route element={<WithoutNavbar />}>
-            <Route exact path='login' element={<Login />} />
-            <Route exact path='register' element={<Register />} />
-            <Route exact path='/' element={<RequireAuth><Dashboard /></RequireAuth>} />
-            <Route exact path='*' element={<Invalid />} />
-          </Route>
+          {/* with navbar*/}
+          <Route exact path='/' element={<RequireAuthWithNavbar><Dashboard /></RequireAuthWithNavbar>} />
+          <Route exact path='/orders' element={<RequireAuthWithNavbar><FoodOrder /></RequireAuthWithNavbar>} />
+          <Route exact path='/messages' element={<RequireAuthWithNavbar><Messages /></RequireAuthWithNavbar>} />
+          <Route exact path='/settings' element={<RequireAuthWithNavbar><Settings /></RequireAuthWithNavbar>} />
+          <Route exact path='/Bills' element={<RequireAuthWithNavbar><Bills /></RequireAuthWithNavbar>} />
+          <Route exact path='/favorites' element={<RequireAuthWithNavbar><Favorites /></RequireAuthWithNavbar>} />
+          <Route exact path='/history' element={<RequireAuthWithNavbar><History /></RequireAuthWithNavbar>} />
+
+          {/* without navbar */}
+          <Route exact path='login' element={<Login />} />
+          <Route exact path='register' element={<Register />} />
+          <Route exact path='*' element={<Invalid />} />
         </Routes>
       </BrowserRouter>
   );

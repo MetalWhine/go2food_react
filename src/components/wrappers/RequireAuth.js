@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+import { React, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Navbar from '../Navbar';
 import Cookies from 'universal-cookie';
 import axios from 'axios';
 
@@ -54,7 +55,12 @@ function RequireAuth({ children }) {
 
   if (actualCheckValue)
   {
-    return children;
+    return (
+      <div>
+        <Navbar />
+        {children}
+      </div>
+    )
   }
 
 };
