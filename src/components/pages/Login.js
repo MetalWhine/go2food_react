@@ -4,12 +4,13 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import axios from 'axios';
 import { wait } from "../utils/Functionabilities";
+import LoadingOverlay from "../items/LoadingOverlay";
 import Cookies from "universal-cookie";
 
 function Login() {
-
+    const [loading, SetLoading] = useState(false);
     const cookies = new Cookies();
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     const [loginFailed, SetLoginFailed] = useState(false);
     const [keepLoggedIn, SetKeepLoggedIn] = useState(false);
     const [emailInvalid, SetEmailInvalid] = useState(false);
@@ -32,16 +33,20 @@ function Login() {
     }
 
     const Login = async () => {
+        SetLoading(true);
         cookies.remove('jwt_auth', { path: '/' });
-        await axios.post('http://localhost:8000/login/', {
+        await axios.post(`${process.env.REACT_APP_BACKEND_URL}/login/`, {
             email: emailRef.current.value.trim(),
             password: passwordRef.current.value.trim()
         })
             .then(async function (response) {
+                console.log(response)
                 if (response.data["detail"] === "account not found") {
+                    SetLoading(false);
                     SetLoginFailed(true);
                 }
                 else if (response.data["detail"] === "password doesn't match") {
+                    SetLoading(false);
                     SetLoginFailed(true);
                 }
                 else {
@@ -58,11 +63,13 @@ function Login() {
                         }
 
                         await wait(300);
+                        SetLoading(false);
                         navigate("/");
                     }
                 }
             })
             .catch(function (error) {
+                SetLoading(false);
                 SetLoginFailed(true);
                 console.log(error, 'error');
             });
@@ -93,6 +100,7 @@ function Login() {
 
     return (
         <div className="flex h-[100vh] w-full flex-col bg-gray-100 py-10">
+        {loading ? <LoadingOverlay /> : <div/>}
             {/* Login form */}
             <form onSubmit={handleSubmit} className="flex flex-col px-6 py-6 text-center mx-auto my-[40px] bg-white rounded-xl md:w-[500px] w-[350px] shadow-lg" noValidate>
 

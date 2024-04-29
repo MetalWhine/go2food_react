@@ -27,7 +27,7 @@ let validateToken = async function () {
     return false
   }
 
-  let result = await axios.post('http://localhost:8000/validate_token/', {
+  let result = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/validate_token/`, {
     token: token_value
   })
     .then(function (response) {

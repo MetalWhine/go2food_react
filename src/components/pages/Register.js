@@ -3,9 +3,11 @@ import { useNavigate } from 'react-router-dom'
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import axios from "axios";
 import { wait } from "../utils/Functionabilities";
+import LoadingOverlay from "../items/LoadingOverlay";
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 function Register () {
+    const [loading, SetLoading] = useState(false);
     const navigate = useNavigate()
     const [emailInvalid, SetEmailInvalid] = useState(false);
     const [usernameInvalid, SetUsernameInvalid] = useState(false);
@@ -34,7 +36,8 @@ function Register () {
     }
 
     const TryRegister = async () => {
-        await axios.post('http://localhost:8000/register/', {
+        SetLoading(true);
+        await axios.post(`${process.env.REACT_APP_BACKEND_URL}/register/`, {
             email: emailRef.current.value.trim(),
             username: usernameRef.current.value.trim(),
             password: passwordRef.current.value.trim()
@@ -42,19 +45,23 @@ function Register () {
             .then(async function (response) {
                 if (response.data["detail"] === "email already exist") {
                     SetEmailTaken(true);
+                    SetLoading(false);
                 }
                 else if (response.data["detail"] === "registration failed") {
                     SetregistrationFailed(true);
+                    SetLoading(false);
                 }
                 else {
                     if (response.data["detail"]) {
                         await wait(300);
+                        SetLoading(false);
                         navigate("/login");
                     }
                 }
             })
             .catch(function (error) {
                 SetregistrationFailed(true);
+                SetLoading(false);
                 console.log(error, 'error');
             });
     }
@@ -103,6 +110,7 @@ function Register () {
 
     return (  
         <div className="flex h-[100vh] w-full flex-col bg-gray-100 py-10">
+            {loading ? <LoadingOverlay /> : <div/>}
             {/* Login form */}
             <form onSubmit={handleSubmit} className="flex flex-col px-6 py-6 text-center mx-auto my-[40px] bg-white rounded-xl md:w-[500px] w-[350px] shadow-lg" noValidate>
 
