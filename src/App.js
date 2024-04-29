@@ -16,26 +16,24 @@ import RequireAuth from "./components/functions/RequireAuth";
 
 function App() {
   return (
-    <div>
-      <BrowserRouter>
-          <Routes>
-            <Route element={<WithNavbar />}>
-              <Route exact path='/' element={<RequireAuth><Dashboard /></RequireAuth>} />
-              <Route exact path='/orders' element={<FoodOrder />} />
-              <Route exact path='/messages' element={<Messages />} />
-              <Route exact path='/settings' element={<Settings />} />
-              <Route exact path='/Bills' element={<Bills />} />
-              <Route exact path='/favorites' element={<Favorites />} />
-              <Route exact path='/history' element={<History />} />
-            </Route>
-            <Route element={<WithoutNavbar />}>
-              <Route exact path='login' element={<Login />} />
-              <Route exact path='register' element={<Register />} />
-              <Route exact path='*' element={<Invalid />} />
-            </Route>
-          </Routes>
-        </BrowserRouter>
-    </div>
+    <BrowserRouter>
+        <Routes>
+          <Route element={<WithNavbar />}>
+            <Route exact path='/orders' element={<FoodOrder />} />
+            <Route exact path='/messages' element={<Messages />} />
+            <Route exact path='/settings' element={<Settings />} />
+            <Route exact path='/Bills' element={<Bills />} />
+            <Route exact path='/favorites' element={<Favorites />} />
+            <Route exact path='/history' element={<History />} />
+          </Route>
+          <Route element={<WithoutNavbar />}>
+            <Route exact path='login' element={<Login />} />
+            <Route exact path='register' element={<Register />} />
+            <Route exact path='/' element={<RequireAuth><Dashboard /></RequireAuth>} />
+            <Route exact path='*' element={<Invalid />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
   );
 }
 

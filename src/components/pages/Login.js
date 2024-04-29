@@ -1,4 +1,4 @@
-import {React, useState, useRef} from "react";
+import { React, useState, useRef } from "react";
 import { useNavigate } from 'react-router-dom'
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
@@ -6,7 +6,7 @@ import axios from 'axios';
 import { wait } from "../utils/Functionabilities";
 import Cookies from "universal-cookie";
 
-function Login () {
+function Login() {
 
     const cookies = new Cookies();
     const navigate = useNavigate()
@@ -27,37 +27,32 @@ function Login () {
     const passwordRef = useRef(null);
 
     function isValidEmailAddress(address) {
-        return !! address.match(/.+@.+/);
+        return !!address.match(/.+@.+/);
     }
-
-    
 
     const Login = async () => {
         await axios.post('http://localhost:8000/login/', {
             email: emailRef.current.value.trim(),
             password: passwordRef.current.value.trim()
         })
-        .then(async function (response) {
-            if (response.data["detail"] === "account not found") 
-            {
-                alert("Login failed");
-            }
-            else if (response.data["detail"] === "password doesn't match")
-            {
-                alert("Login failed")
-            }
-            else 
-            { 
-                if(response.data["detail"]){
-                    cookies.set("jwt_auth", response.data["detail"], {"sameSite": "unset"})
-                    await wait(300);
-                    navigate("/");
+            .then(async function (response) {
+                if (response.data["detail"] === "account not found") {
+                    alert("Login failed");
                 }
-            }
-        })
-        .catch(function (error) {
-            console.log(error, 'error');
-        });
+                else if (response.data["detail"] === "password doesn't match") {
+                    alert("Login failed")
+                }
+                else {
+                    if (response.data["detail"]) {
+                        cookies.set("jwt_auth", response.data["detail"], { "sameSite": "lax" })
+                        await wait(300);
+                        navigate("/");
+                    }
+                }
+            })
+            .catch(function (error) {
+                console.log(error, 'error');
+            });
     }
 
     function handleSubmit(event) {
@@ -65,25 +60,22 @@ function Login () {
         let emailValid = true;
         let passwordValid = true;
 
-        if (!isValidEmailAddress(emailRef.current.value.trim()))
-        {
+        if (!isValidEmailAddress(emailRef.current.value.trim())) {
             SetEmailInvalid(true);
             emailValid = false;
         }
-        
-        if (passwordRef.current.value.trim() === "")
-        {
+
+        if (passwordRef.current.value.trim() === "") {
             SetPasswordInvalid(true);
             passwordValid = false;
         }
 
-        if (emailValid && passwordValid)
-        {
+        if (emailValid && passwordValid) {
             Login();
         }
     }
 
-    return (  
+    return (
         <div className="flex h-[100vh] w-full flex-col bg-gray-100 py-10">
             {/* Login form */}
             <form onSubmit={handleSubmit} className="flex flex-col px-6 py-6 text-center mx-auto my-[40px] bg-white rounded-xl md:w-[500px] w-[350px] shadow-lg" noValidate>
@@ -99,7 +91,7 @@ function Login () {
                 {/* email field */}
                 <div className="flex flex-col mb-5">
                     <label htmlFor="email" className="mb-2 text-sm text-start text-grey-900">Email</label>
-                    <input id="email" type="email" ref={emailRef} required={emailInvalid} placeholder="Email" className="w-full px-5 py-4 mr-2 text-sm font-medium outline-none focus:bg-gray-300 placeholder:text-gray-700 bg-gray-200 text-dark-gray-900 rounded-2xl peer"/>
+                    <input id="email" type="email" ref={emailRef} required={emailInvalid} placeholder="Email" className="w-full px-5 py-4 mr-2 text-sm font-medium outline-none focus:bg-gray-300 placeholder:text-gray-700 bg-gray-200 text-dark-gray-900 rounded-2xl peer" />
                     <p htmlFor="email" className="text-start hidden peer-required:block peer-invalid:block text-pink-600 text-sm px-2 animate-nav-bars-menu-popup">Please provide a valid email address.</p>
                 </div>
 
@@ -107,11 +99,11 @@ function Login () {
                 <div className="flex flex-col mb-5">
                     <label htmlFor="password" className="mb-2 text-sm text-start text-grey-900">Password</label>
                     <div className="relative">
-                        <input id="password" ref={passwordRef} required={passwordInvalid} type={showPassword ? "text" : "password"} placeholder="Password" className="flex items-center w-full pl-5 pr-10 py-4 mr-2 text-sm font-medium outline-none focus:bg-gray-300 placeholder:text-gray-700 bg-gray-200 text-dark-gray-900 rounded-2xl peer"/>
-                        {showPassword ? 
-                            <VisibilityOffIcon className={`absolute right-2 -translate-y-[50%] peer-required:-translate-y-[90%] top-[50%] text-gray-400 hover:text-gray-500`} onClick={ToggleShowPassword}/>
+                        <input id="password" ref={passwordRef} required={passwordInvalid} type={showPassword ? "text" : "password"} placeholder="Password" className="flex items-center w-full pl-5 pr-10 py-4 mr-2 text-sm font-medium outline-none focus:bg-gray-300 placeholder:text-gray-700 bg-gray-200 text-dark-gray-900 rounded-2xl peer" />
+                        {showPassword ?
+                            <VisibilityOffIcon className={`absolute right-2 -translate-y-[50%] peer-required:-translate-y-[90%] top-[50%] text-gray-400 hover:text-gray-500`} onClick={ToggleShowPassword} />
                             :
-                            <VisibilityIcon className={`absolute right-2 -translate-y-[50%] peer-required:-translate-y-[90%] top-[50%] text-gray-400 hover:text-gray-500`} onClick={ToggleShowPassword}/>
+                            <VisibilityIcon className={`absolute right-2 -translate-y-[50%] peer-required:-translate-y-[90%] top-[50%] text-gray-400 hover:text-gray-500`} onClick={ToggleShowPassword} />
                         }
                         <p htmlFor="password" className="relative text-start hidden text-pink-600 peer-required:block text-sm px-2 animate-nav-bars-menu-popup">Please provide a password.</p>
                     </div>
@@ -121,9 +113,9 @@ function Login () {
                 <div className="flex flex-row justify-between mb-8">
                     {/* keep me logged in tick */}
                     <label className="relative inline-flex items-center mr-3 cursor-pointer select-none">
-                        <input onChange={ToggleKeepLoggedIn} type="checkbox" checked={keepLoggedIn} className="sr-only peer"/>
+                        <input onChange={ToggleKeepLoggedIn} type="checkbox" checked={keepLoggedIn} className="sr-only peer" />
                         <div className="w-5 h-5 bg-white hover:bg-gray-300 border-2 rounded-sm border-gray-500 peer-checked:border-0 peer-checked:bg-green-600">
-                            <img className="" src="https://raw.githubusercontent.com/Loopple/loopple-public-assets/main/motion-tailwind/img/icons/check.png" alt="tick"/>
+                            <img className="" src="https://raw.githubusercontent.com/Loopple/loopple-public-assets/main/motion-tailwind/img/icons/check.png" alt="tick" />
                         </div>
                         <span className="ml-3 text-sm font-normal text-gray-900">Keep me logged in</span>
                     </label>
@@ -147,18 +139,18 @@ function Login () {
 
                 {/* or separator */}
                 <div className="flex items-center my-4">
-                    <hr className="h-0 border-b border-solid border-grey-500 grow"/>
+                    <hr className="h-0 border-b border-solid border-grey-500 grow" />
                     <p className="mx-4 text-grey-600">or</p>
-                    <hr className="h-0 border-b border-solid border-grey-500 grow"/>
+                    <hr className="h-0 border-b border-solid border-grey-500 grow" />
                 </div>
-                
+
                 {/* Sign in with Google o auth*/}
                 <button className="flex items-center justify-center mx-auto w-[250px] py-4 my-4 text-sm font-medium rounded-2xl text-gray-900 bg-gray-200 hover:bg-gray-300 focus:ring-4 focus:ring-gray-200">
-                    <img className="h-5 mr-2 pointer-events-none" src="https://raw.githubusercontent.com/Loopple/loopple-public-assets/main/motion-tailwind/img/logos/logo-google.png" alt=""/>
+                    <img className="h-5 mr-2 pointer-events-none" src="https://raw.githubusercontent.com/Loopple/loopple-public-assets/main/motion-tailwind/img/logos/logo-google.png" alt="" />
                     <p className="select-none">Sign in with Google</p>
                 </button>
 
-            </form>      
+            </form>
         </div>
     )
 }
