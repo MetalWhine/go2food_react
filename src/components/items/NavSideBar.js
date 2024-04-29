@@ -41,10 +41,6 @@ function NavSideBar() {
 
     const location = useLocation();
 
-    useEffect(() => {
-    console.log(location.pathname);
-    }, [location]);
-
     const navSideBarBurgerButtonCliked = () => {
         SetNavSideBarShown(!NavSideBarShown);
     }
@@ -112,11 +108,7 @@ function NavSideBar() {
         }
     }, [matches])
 
-    // check what link currently
-    useEffect (() => {
-        console.log("test")    
-    }, [])
-
+    
     
     return (
         <div className="z-[9]">
