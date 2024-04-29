@@ -7,7 +7,25 @@ import axios from 'axios';
 
 let validateToken = async function () {
   const cookies = new Cookies();
-  let token_value = cookies.get("jwt_auth");
+  let token_cookies = cookies.get("jwt_auth");
+  let token_session_storage = window.sessionStorage.getItem("jwt_auth")
+  let token_value = "null"
+
+  // check first if there are jwt values either in cookies or session storage
+  if (token_cookies)
+  {
+    token_value = token_cookies;
+  }
+  else if (token_session_storage)
+  {
+    token_value = token_session_storage
+  }
+
+  // if both cookies and session storage have no jwt values just return false
+  if (token_value === "null")
+  {
+    return false
+  }
 
   let result = await axios.post('http://localhost:8000/validate_token/', {
     token: token_value

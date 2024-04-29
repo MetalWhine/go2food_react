@@ -10,6 +10,7 @@ function Login() {
 
     const cookies = new Cookies();
     const navigate = useNavigate()
+    const [loginFailed, SetLoginFailed] = useState(false);
     const [keepLoggedIn, SetKeepLoggedIn] = useState(false);
     const [emailInvalid, SetEmailInvalid] = useState(false);
     const [passwordInvalid, SetPasswordInvalid] = useState(false);
@@ -31,32 +32,47 @@ function Login() {
     }
 
     const Login = async () => {
+        cookies.remove('jwt_auth', { path: '/' });
         await axios.post('http://localhost:8000/login/', {
             email: emailRef.current.value.trim(),
             password: passwordRef.current.value.trim()
         })
             .then(async function (response) {
                 if (response.data["detail"] === "account not found") {
-                    alert("Login failed");
+                    SetLoginFailed(true);
                 }
                 else if (response.data["detail"] === "password doesn't match") {
-                    alert("Login failed")
+                    SetLoginFailed(true);
                 }
                 else {
                     if (response.data["detail"]) {
-                        cookies.set("jwt_auth", response.data["detail"], { "sameSite": "strict", "secure":"true" })
+                        // save token in cookies
+                        if (keepLoggedIn)
+                        {
+                            cookies.set("jwt_auth", response.data["detail"], { "sameSite": "strict", "secure":"true" })
+                        }
+                        else 
+                        // save token on session storage
+                        {
+                            window.sessionStorage.setItem("jwt_auth", response.data["detail"])
+                        }
+
                         await wait(300);
                         navigate("/");
                     }
                 }
             })
             .catch(function (error) {
+                SetLoginFailed(true);
                 console.log(error, 'error');
             });
     }
 
     function handleSubmit(event) {
         event.preventDefault();
+        SetLoginFailed(false);
+        SetEmailInvalid(false);
+        SetPasswordInvalid(false);
         let emailValid = true;
         let passwordValid = true;
 
@@ -83,7 +99,8 @@ function Login() {
                 {/* login info */}
                 <div className="my-2">
                     <p className="mb-3 text-4xl font-extrabold text-dark-grey-900">Sign In</p>
-                    <p className="mb-4 text-grey-700">Enter your email and password</p>
+                    <p className="mb-3 text-grey-700">Enter your email and password</p>
+                    <p className={`mb-4 text-pink-600 ${loginFailed ? "block": "hidden"} animate-nav-bars-menu-popup`}>Email or password is incorrect</p>
                 </div>
 
                 {/* login fields */}
@@ -114,7 +131,7 @@ function Login() {
                     {/* keep me logged in tick */}
                     <label className="relative inline-flex items-center mr-3 cursor-pointer select-none">
                         <input onChange={ToggleKeepLoggedIn} type="checkbox" checked={keepLoggedIn} className="sr-only peer" />
-                        <div className="w-5 h-5 bg-white hover:bg-gray-300 border-2 rounded-sm border-gray-500 peer-checked:border-0 peer-checked:bg-green-600">
+                        <div className="ml-2 w-5 h-5 bg-white hover:bg-gray-300 border-2 rounded-sm border-gray-500 peer-checked:border-0 peer-checked:bg-green-600">
                             <img className="" src="https://raw.githubusercontent.com/Loopple/loopple-public-assets/main/motion-tailwind/img/icons/check.png" alt="tick" />
                         </div>
                         <span className="ml-3 text-sm font-normal text-gray-900">Keep me logged in</span>
