@@ -12,7 +12,7 @@ import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 
 function NavButton({IconImage, text, path, current, func}) {
     return (
-        <Link onClick={func} to={path} className={`rounded-[10px] py-4 text-center ${path === current ? "bg-green-900 text-white hover:bg-green-950 active:bg-green-950" : "hover:bg-gray-300 w-full active:bg-green-900 active:text-white"}`}>
+        <Link onClick={func} to={path} className={`rounded-[10px] py-4 text-center ${path === current ? "bg-green-700 text-white hover:bg-green-800 active:bg-green-900" : "hover:bg-gray-300 w-full active:bg-green-700 active:text-white"}`}>
             < IconImage/>
             {text}
         </Link>
@@ -21,7 +21,7 @@ function NavButton({IconImage, text, path, current, func}) {
 
 function Banner() {
     return (
-        <div className="rounded-[12px] w-[90%] my-4 p-4 m-auto flex flex-col bg-green-800 shadow-md">
+        <div className="rounded-[12px] w-[90%] my-4 p-4 m-auto flex flex-col bg-green-700 shadow-md">
             <p className="py-4 px-2 text-white font-bold text-[18px]/[26px]">
                 Upgrade your account to Get Free Voucher
             </p>
@@ -116,7 +116,7 @@ function NavSideBar() {
                 <MenuOutlinedIcon />
             </div>
 
-            <div id="navSideBar" className=" bg-white fixed mt-16 w-[250px] rounded-br-[20px] hidden min-[1650px]:block shadow-xl z-[7] animate-nav-bars-menu-popup">
+            <div id="navSideBar" className=" bg-gray-50 fixed mt-16 w-[250px] rounded-br-[20px] hidden min-[1650px]:block shadow-xl z-[7] animate-nav-bars-menu-popup">
 
                 {/* nav bar buttons div container */}
                 <div className="flex flex-col p-4">

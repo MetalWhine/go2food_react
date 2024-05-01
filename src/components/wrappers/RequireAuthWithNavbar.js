@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import Navbar from '../Navbar';
 import Cookies from 'universal-cookie';
 import axios from 'axios';
+import { BackendURL } from '../configs/GlobalVar';
+import LoadingOverlay from '../items/LoadingOverlay';
 
 
 let validateToken = async function () {
@@ -27,7 +29,7 @@ let validateToken = async function () {
     return false
   }
 
-  let result = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/validate_token/`, {
+  let result = await axios.post(`${BackendURL}/validate_token/`, {
     token: token_value
   })
     .then(function (response) {
@@ -57,7 +59,7 @@ function RequireAuthWithNavbar({ children }) {
   const checkLogin = async () => {
     let login_valid = await validateToken();
     setInitialCheckValue(login_valid);
-    setActualCheckValue(login_valid)
+    setActualCheckValue(login_valid);
   }
 
   useEffect(() => {
@@ -70,7 +72,6 @@ function RequireAuthWithNavbar({ children }) {
     }
   }, [initialCheckValue])
 
-
   if (actualCheckValue)
   {
     return (
@@ -78,6 +79,11 @@ function RequireAuthWithNavbar({ children }) {
         <Navbar />
         {children}
       </div>
+    )
+  }
+  else {
+    return (
+      <LoadingOverlay />
     )
   }
 
