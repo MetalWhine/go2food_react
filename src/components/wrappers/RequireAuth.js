@@ -3,13 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import Navbar from '../Navbar';
 import Cookies from 'universal-cookie';
 import axios from 'axios';
+import LoadingOverlay from '../items/LoadingOverlay';
+import { BackendURL } from '../configs/GlobalVar';
 
 
 let validateToken = async function () {
   const cookies = new Cookies();
   let token_value = cookies.get("jwt_auth");
 
-  let result = await axios.post('http://localhost:8000/validate_token/', {
+  let result = await axios.post(`${BackendURL}/validate_token/`, {
     token: token_value
   })
     .then(function (response) {
@@ -60,6 +62,12 @@ function RequireAuth({ children }) {
         <Navbar />
         {children}
       </div>
+    )
+  } 
+  else 
+  {
+    return (
+      <LoadingOverlay />
     )
   }
 

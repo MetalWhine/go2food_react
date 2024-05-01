@@ -6,12 +6,16 @@ import axios from 'axios';
 import { wait } from "../utils/Functionabilities";
 import LoadingOverlay from "../items/LoadingOverlay";
 import Cookies from "universal-cookie";
+import { BackendURL } from "../configs/GlobalVar";
+import { Auth, Provider } from "../configs/FirebaseConfig";
+import { signInWithPopup } from "firebase/auth";
 
 function Login() {
     const [loading, SetLoading] = useState(false);
     const cookies = new Cookies();
     const navigate = useNavigate();
     const [loginFailed, SetLoginFailed] = useState(false);
+    const [signInGoogleCancelled, setSignInGoogleCancelled] = useState(false);
     const [keepLoggedIn, SetKeepLoggedIn] = useState(false);
     const [emailInvalid, SetEmailInvalid] = useState(false);
     const [passwordInvalid, SetPasswordInvalid] = useState(false);
@@ -34,13 +38,11 @@ function Login() {
 
     const Login = async () => {
         SetLoading(true);
-        cookies.remove('jwt_auth', { path: '/' });
-        await axios.post(`${process.env.REACT_APP_BACKEND_URL}/login/`, {
+        await axios.post(`${BackendURL}/login/`, {
             email: emailRef.current.value.trim(),
             password: passwordRef.current.value.trim()
         })
-            .then(async function (response) {
-                console.log(response)
+            .then(async (response) => {
                 if (response.data["detail"] === "account not found") {
                     SetLoading(false);
                     SetLoginFailed(true);
@@ -68,12 +70,48 @@ function Login() {
                     }
                 }
             })
-            .catch(function (error) {
+            .catch((error) => {
                 SetLoading(false);
                 SetLoginFailed(true);
                 console.log(error, 'error');
             });
     }
+
+    const SignInWithGoogle = async () => {
+        setSignInGoogleCancelled(false);
+        SetLoading(true);
+        signInWithPopup(Auth,Provider).then(async (res) => {
+            const result = res.user.toJSON();
+            await axios.post (`${BackendURL}/sign-in-google/`, {
+                email: result["email"],
+                username: result["displayName"]
+            }).then(async (res) => {
+                if (res.data["detail"] === "sign in failed") {
+                    SetLoading(false);
+                    setSignInGoogleCancelled(true);
+                }
+                else 
+                {
+                    if (res.data["detail"]) {
+                        // save token in cookies
+                        cookies.set("jwt_auth", res.data["detail"], { "sameSite": "strict", "secure":"true" })
+                        await wait(300);
+                        SetLoading(false);
+                        navigate("/");
+                    }
+                }
+            })
+            .catch ((e) => {
+                SetLoading(false);
+                setSignInGoogleCancelled(true);
+                console.log(e, 'error');
+            })
+        })
+        .catch((e) => {
+            setSignInGoogleCancelled(true);
+            SetLoading(false);
+        })
+      }
 
     function handleSubmit(event) {
         event.preventDefault();
@@ -170,10 +208,11 @@ function Login() {
                 </div>
 
                 {/* Sign in with Google o auth*/}
-                <button className="flex items-center justify-center mx-auto w-[250px] py-4 my-4 text-sm font-medium rounded-2xl text-gray-900 bg-gray-200 hover:bg-gray-300 focus:ring-4 focus:ring-gray-200">
+                <button type="button" onClick={SignInWithGoogle} className="flex items-center justify-center mx-auto w-[250px] py-4 my-4 text-sm font-medium rounded-2xl text-gray-900 bg-gray-200 hover:bg-gray-300 focus:ring-4 focus:ring-gray-200">
                     <img className="h-5 mr-2 pointer-events-none" src="https://raw.githubusercontent.com/Loopple/loopple-public-assets/main/motion-tailwind/img/logos/logo-google.png" alt="" />
                     <p className="select-none">Sign in with Google</p>
                 </button>
+                <p className={`mb-4 text-pink-600 ${signInGoogleCancelled ? "block": "hidden"} animate-nav-bars-menu-popup`}>sign in process interrupted</p>
 
             </form>
         </div>
