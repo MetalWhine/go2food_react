@@ -3,7 +3,7 @@ import '../../index.css';
 import HorizontalScroll from '../complex-items/HorizontalScroll';
 import CategoryCard from '../items/CategoryCard';
 import RestaurantCard from '../items/RestaurantCard';
-import Navbar from '../Navbar';
+import { UseUserInfo } from '../../store';
 
 const list_categories = [
                          ["Burgers"], 
@@ -24,14 +24,16 @@ const list_restaurants = [
     ]
 
 function Dashboard () {
-    const first_name = 'user';
+    const {username} = UseUserInfo((state) => ({
+        username: state.username
+      }));
 
     return (
         <div className="pt-[72px]">
             {/* welcome message + search bar */}
             <div className="flex flex-col md:flex-row py-2 mx-[12.5%] sm:mx-[15%]">
                 <div className='md:p-4 sm:p-2 flex flex-[1] items-center justify-center md:justify-start'>
-                    <p className="text-center text-lg sm:text-xl md:text-2xl font-bold">Welcome, {first_name}!</p>
+                    <p className="text-center text-lg sm:text-xl md:text-2xl font-bold">Welcome, {username}!</p>
                 </div>
                 <div className='py-2 md:px-2 md:py-2 flex min-[810px]:flex-[2] min-[1560px]:flex-[3] min-[1300px]:flex-[4] items-center justify-center'> 
                     <input type="text" id="food_search" className="py-2 px-2 bg-white border w-full border-black text-md sm:text-xl md:text-2xl text-gray-900 rounded-[24px]" placeholder="🔍 search for food"/>
