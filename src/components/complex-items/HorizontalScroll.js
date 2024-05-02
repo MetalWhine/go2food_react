@@ -25,7 +25,6 @@ const HorizontalScroll = ({ children, className }) => {
 
   const handleWheel = (event) => {
     if (event.deltaY === 0) return;
-    event.preventDefault();
     scrollContainerRef.current.scrollBy(event.deltaY/8, 0);
   };
 
