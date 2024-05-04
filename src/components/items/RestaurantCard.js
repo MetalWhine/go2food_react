@@ -11,9 +11,9 @@ function RestaurantCard ({name, range, rating, img_url}) {
                 <p className="text-sm sm:text-base md:text-lg font-bold line-clamp-1">{name}</p>
 
                 {/* rating info */}
-                <div className="flex items-center">
+                <div className="flex">
                     <img className="w-4 h-4 mr-1 my-auto pointer-events-none" src="images/food-categories/star_rating.png" alt="Category Icons"></img>
-                    <p className="text-xs">{rating}</p>
+                    <p className="text-xs ">{rating}</p>
                 </div>
             </div>
         </div>

@@ -8,6 +8,7 @@ import RestaurantCardSkeleton from '../items/RestaurantCardSkeleton';
 import { useLocation } from 'react-router-dom';
 import { BackendURL } from '../configs/GlobalVar';
 import { UseUserInfo, UsePositionInfo } from '../../store';
+import { Skeleton } from '@mui/material';
 
 const list_categories = [
                          ["Burgers"], 
@@ -18,9 +19,32 @@ const list_categories = [
                          ["Beverages"],
                         ]
 
+const skeleton_amount = [ 1,
+                          2,
+                          3,
+                          4,
+                          5,
+                          6
+                        ]
+
 function Dashboard () {
     let location = useLocation()
     const [locUpdated, SetLocUpdated] = useState(false);
+    const [recommendedLoading, SetRecommendedLoading] = useState(false);
+
+    const recommendedAtEnd = () => {
+        // if (recommendedLoading)
+        // {
+        //     SetRecommendedLoading(false)
+        // }
+        // else
+        // {
+        //     SetRecommendedLoading(true)
+        // }
+
+        SetRecommendedLoading(true)
+    }
+    
     const {username} = UseUserInfo((state) => ({
         username: state.username
       }));
@@ -76,6 +100,32 @@ function Dashboard () {
         }
     }, [locUpdated])
 
+    // update the list of restaurants on scroll end
+    useEffect(() => {
+        if (recommendedLoading)
+        {
+            axios.post(`${BackendURL}/get_recommended_restaurants/`, {
+                latitude: latitude,
+                longitude: longitude
+              })
+                .then((response) => {
+                  for (let index = 0; index < response.data.length; index++)
+                  {
+                    const arr = [[response.data[index]['name'],
+                                 response.data[index]['distance'],
+                                 response.data[index]['rating'],
+                                 response.data[index]['pictureURL']
+                                ]]
+                    SetListRestaurants(list_restaurants => [...list_restaurants, ...arr])
+                    SetRecommendedLoading(false)
+                  }
+                })
+                .catch((error) => {
+                  console.log(error, 'error');
+                });
+        }
+    }, [recommendedLoading])
+
     return (
         <div className="pt-[72px]">
             {/* welcome message + search bar */}
@@ -98,7 +148,7 @@ function Dashboard () {
             {/*Categories container*/}
             <div className="mx-[12.5%] sm:mx-[15%] py-2 m-2">
                 <h1 className="font-bold text-lg sm:text-xl md:text-2xl">Categories</h1>
-                <HorizontalScroll className={"no-scrollbar select-none my-4 rounded-lg"}>
+                <HorizontalScroll className={"no-scrollbar select-none my-4 rounded-lg"} >
                     {
                         list_categories.map((e, index) => {
                             return (
@@ -112,7 +162,7 @@ function Dashboard () {
             {/*Recommended Foods container*/}
             <div className="mx-[12.5%] sm:mx-[15%] py-2 m-2">
                 <h1 className="font-bold text-lg sm:text-xl md:text-2xl">Recommended Foods</h1>
-                <HorizontalScroll className={"no-scrollbar select-none my-4 rounded-lg"}>
+                <HorizontalScroll className={"no-scrollbar select-none my-4 rounded-lg"} scrollEndFunc={recommendedAtEnd}>
                     {
                         locUpdated ? 
                         list_restaurants.map((e, index) => {
@@ -121,8 +171,13 @@ function Dashboard () {
                             )
                         }) 
                         :
-                        <RestaurantCardSkeleton />
+                        skeleton_amount.map((e, index) => {
+                            return (
+                                <RestaurantCardSkeleton key={index} />
+                            )
+                        })
                     }
+                    <RestaurantCardSkeleton />
                 </HorizontalScroll>
             </div>
 
@@ -137,6 +192,7 @@ function Dashboard () {
                             )
                         })
                     }
+                    <RestaurantCardSkeleton />
                 </HorizontalScroll>
             </div>
 

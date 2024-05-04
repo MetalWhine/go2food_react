@@ -71,10 +71,10 @@ function BalanceBanner () {
 
                     {/* balance */}
                     <div className="flex flex-col bg-white pl-[18px] pr-[36px] py-2 mx-4 my-4 rounded-md">
-                        <div className="text-[17px]/[20px] font-bold">
+                        <div className="text-[17px]/[20px]">
                             <p> Balance </p>
                         </div>
-                        <div className="text-2xl font-bold">
+                        <div className="text-xl font-bold">
                             <p> 50 $ </p>
                         </div>
                     </div>
@@ -112,10 +112,10 @@ function BalanceBanner () {
 
                     {/* balance */}
                     <div className="flex flex-col bg-white pl-[18px] pr-[36px] py-2 mx-4 my-4 rounded-md">
-                        <div className="text-[17px]/[20px] font-bold">
+                        <div className="text-[17px]/[20px]">
                             <p> Balance </p>
                         </div>
-                        <div className="text-2xl font-bold">
+                        <div className="text-xl font-bold">
                             <p> 50 $ </p>
                         </div>
                     </div>
