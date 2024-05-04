@@ -53,6 +53,7 @@ const HorizontalScroll = ({ children, className, scrollEndFunc=() => {} }) => {
       onMouseUp={handleMouseUp}
       onMouseMove={handleMouseMove}
       onWheel={handleWheel}
+      onTouchMove={handleMouseMove}
       style={{
         overflowX: 'scroll',
         display: 'flex',
