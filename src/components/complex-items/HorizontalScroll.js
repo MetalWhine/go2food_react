@@ -23,7 +23,7 @@ const HorizontalScroll = ({ children, className, scrollEndFunc=() => {} }) => {
     setStartX(event.clientX); // Update startX for next drag movement
     const isAtEnd = scrollContainerRef.current.scrollLeft + scrollContainerRef.current.clientWidth >= scrollContainerRef.current.scrollWidth;
     if (isAtEnd) {
-      if (currentScrollLeft != scrollContainerRef.current.scrollLeft)
+      if (currentScrollLeft !== scrollContainerRef.current.scrollLeft)
       {
         scrollEndFunc()
         console.log("end")
@@ -37,7 +37,7 @@ const HorizontalScroll = ({ children, className, scrollEndFunc=() => {} }) => {
     scrollContainerRef.current.scrollBy(event.deltaY/8, 0);
     const isAtEnd = scrollContainerRef.current.scrollLeft + scrollContainerRef.current.clientWidth >= scrollContainerRef.current.scrollWidth;
     if (isAtEnd) {
-      if (currentScrollLeft != scrollContainerRef.current.scrollLeft)
+      if (currentScrollLeft !== scrollContainerRef.current.scrollLeft)
       {
         scrollEndFunc()
         console.log("end")
@@ -45,11 +45,11 @@ const HorizontalScroll = ({ children, className, scrollEndFunc=() => {} }) => {
     }
   };
 
-  const handleTouchMove = (event) => {
-    const isAtEnd = scrollContainerRef.current.scrollLeft + event.currentTarget.clientWidth >= event.currentTarget.scrollWidth;
+  const handleTouchMove = () => {
+    const isAtEnd = scrollContainerRef.current.scrollLeft + scrollContainerRef.current.clientWidth >= scrollContainerRef.current.scrollWidth;
     if (isAtEnd) {
-        scrollEndFunc()
-        console.log("end")
+      scrollEndFunc()
+      console.log("end")
     }
   };
 
