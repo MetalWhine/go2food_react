@@ -75,7 +75,6 @@ function RequireAuthWithNavbar({ children }) {
 
   const checkLogin = async () => {
     let login_valid = await validateToken();
-    console.log(login_valid)
     setInitialCheckValue(login_valid);
     setActualCheckValue(login_valid);
   }

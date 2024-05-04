@@ -1,9 +1,13 @@
-import React from 'react';
+import {React, useState, useEffect} from 'react';
 import '../../index.css';
+import axios from 'axios';
 import HorizontalScroll from '../complex-items/HorizontalScroll';
 import CategoryCard from '../items/CategoryCard';
 import RestaurantCard from '../items/RestaurantCard';
-import { UseUserInfo } from '../../store';
+import RestaurantCardSkeleton from '../items/RestaurantCardSkeleton';
+import { useLocation } from 'react-router-dom';
+import { BackendURL } from '../configs/GlobalVar';
+import { UseUserInfo, UsePositionInfo } from '../../store';
 
 const list_categories = [
                          ["Burgers"], 
@@ -14,19 +18,63 @@ const list_categories = [
                          ["Beverages"],
                         ]
 
-const list_restaurants = [
-    ["Legendary Laksa", 0.60, 4.6, "images/restaurant-templates/laksa.png"], 
-    ["Ayam Goreng Mas Ganjar", 1.60, 4.2, "images/restaurant-templates/ayam-goreng.png"],
-    ["Mie Bakso Pak Kumis", 0.83, 5.0, "images/restaurant-templates/mie-bakso.png"],
-    ["Nasi Lemak Uncle Ato", 2.50, 4.5, "images/restaurant-templates/nasi-lemak.png"],
-    ["Nasi Ayam Pak Jarwo", 0.69, 4.8, "images/restaurant-templates/nasi-ayam.png"],
-    ["Soto Ayam Madura Mas Tretan", 1.89, 4.1, "images/restaurant-templates/soto-ayam.png"],
-    ]
-
 function Dashboard () {
+    let location = useLocation()
+    const [locUpdated, SetLocUpdated] = useState(false);
     const {username} = UseUserInfo((state) => ({
         username: state.username
       }));
+
+    const {latitude, longitude, UpdateLatitude, UpdateLongitude} = UsePositionInfo((state) => ({
+        latitude: state.latitude,
+        longitude: state.longitude,
+        UpdateLatitude: state.UpdateLatitude,
+        UpdateLongitude: state.UpdateLongitude
+      }));
+
+    useEffect(() => {
+        navigator.geolocation.getCurrentPosition((pos) => {
+            UpdateLongitude(pos.coords.longitude);
+            UpdateLatitude(pos.coords.latitude);
+            SetLocUpdated(true)
+        })
+    }, [location])
+
+    const [list_restaurants, SetListRestaurants] = useState([])
+
+    const list_recent_orders = [
+        ["Legendary Laksa", 0.60, 4.6, "images/restaurant-templates/laksa.png"], 
+        ["Ayam Goreng Mas Ganjar", 1.60, 4.2, "images/restaurant-templates/ayam-goreng.png"],
+        ["Mie Bakso Pak Kumis", 0.83, 5.0, "images/restaurant-templates/mie-bakso.png"],
+        ["Nasi Lemak Uncle Ato", 2.50, 4.5, "images/restaurant-templates/nasi-lemak.png"],
+        ["Nasi Ayam Pak Jarwo", 0.69, 4.8, "images/restaurant-templates/nasi-ayam.png"],
+        ["Soto Ayam Madura Mas Tretan", 1.89, 4.1, "images/restaurant-templates/soto-ayam.png"],
+        ]
+    
+    // update the list of restaurants on intial page load
+    useEffect(() => {
+        if (locUpdated)
+        {
+            axios.post(`${BackendURL}/get_recommended_restaurants/`, {
+                latitude: latitude,
+                longitude: longitude
+              })
+                .then((response) => {
+                  for (let index = 0; index < response.data.length; index++)
+                  {
+                    const arr = [[response.data[index]['name'],
+                                 response.data[index]['distance'],
+                                 response.data[index]['rating'],
+                                 response.data[index]['pictureURL']
+                                ]]
+                    SetListRestaurants(list_restaurants => [...list_restaurants, ...arr])
+                  }
+                })
+                .catch((error) => {
+                  console.log(error, 'error');
+                });
+        }
+    }, [locUpdated])
 
     return (
         <div className="pt-[72px]">
@@ -52,9 +100,9 @@ function Dashboard () {
                 <h1 className="font-bold text-lg sm:text-xl md:text-2xl">Categories</h1>
                 <HorizontalScroll className={"no-scrollbar select-none my-4 rounded-lg"}>
                     {
-                        list_categories.map(e => {
+                        list_categories.map((e, index) => {
                             return (
-                                <CategoryCard name={e[0]} />
+                                <CategoryCard key={index} name={e[0]} />
                             )
                         })
                     }
@@ -66,11 +114,14 @@ function Dashboard () {
                 <h1 className="font-bold text-lg sm:text-xl md:text-2xl">Recommended Foods</h1>
                 <HorizontalScroll className={"no-scrollbar select-none my-4 rounded-lg"}>
                     {
-                        list_restaurants.map(e => {
+                        locUpdated ? 
+                        list_restaurants.map((e, index) => {
                             return (
-                                <RestaurantCard name={e[0]} range={e[1]} rating={e[2]} img_url={e[3]} />
+                                <RestaurantCard key={index} name={e[0]} range={e[1]} rating={e[2]} img_url={e[3]} />
                             )
-                        })
+                        }) 
+                        :
+                        <RestaurantCardSkeleton />
                     }
                 </HorizontalScroll>
             </div>
@@ -80,9 +131,9 @@ function Dashboard () {
                 <h1 className="font-bold text-lg sm:text-xl md:text-2xl">Recent Orders</h1>
                 <HorizontalScroll className={"no-scrollbar select-none my-4 rounded-lg"}>
                     {
-                        list_restaurants.map(e => {
+                        list_recent_orders.map((e, index) => {
                             return (
-                                <RestaurantCard name={e[0]} range={e[1]} rating={e[2]} img_url={e[3]} />
+                                <RestaurantCard key={index} name={e[0]} range={e[1]} rating={e[2]} img_url={e[3]} />
                             )
                         })
                     }

@@ -116,14 +116,14 @@ function NavSideBar() {
                 <MenuOutlinedIcon />
             </div>
 
-            <div id="navSideBar" className=" bg-gray-50 fixed mt-16 w-[250px] rounded-br-[20px] hidden min-[1650px]:block shadow-xl z-[7] animate-nav-bars-menu-popup">
+            <div id="navSideBar" className=" bg-gray-100 fixed mt-16 w-[250px] rounded-br-[20px] hidden min-[1650px]:block shadow-xl z-[7] animate-nav-bars-menu-popup">
 
                 {/* nav bar buttons div container */}
                 <div className="flex flex-col p-4">
                     {
-                        list_buttons.map(e => {
+                        list_buttons.map((e, index) => {
                             return (
-                                <NavButton func={LinkButtonClicked} IconImage={e[0]} text={e[1]} path={e[2]} current={e[3]}/>
+                                <NavButton key={index} func={LinkButtonClicked} IconImage={e[0]} text={e[1]} path={e[2]} current={e[3]}/>
                             )
                         })
                     }
