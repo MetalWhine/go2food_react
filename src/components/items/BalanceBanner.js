@@ -74,7 +74,7 @@ function BalanceBanner () {
                         <div className="text-[17px]/[20px] font-bold">
                             <p> Balance </p>
                         </div>
-                        <div classname="text-2xl font-bold">
+                        <div className="text-2xl font-bold">
                             <p> 50 $ </p>
                         </div>
                     </div>
@@ -115,7 +115,7 @@ function BalanceBanner () {
                         <div className="text-[17px]/[20px] font-bold">
                             <p> Balance </p>
                         </div>
-                        <div classname="text-2xl font-bold">
+                        <div className="text-2xl font-bold">
                             <p> 50 $ </p>
                         </div>
                     </div>

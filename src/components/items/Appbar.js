@@ -60,9 +60,9 @@ function Appbar() {
                 <div className="flex items-center px-2">
                         <div onClick={SmallMoreButtonCliked} className="block sm:hidden p-2 rounded-[12px] hover:bg-gray-300 active:bg-gray-400"><MoreVertOutlinedIcon /></div>
                         {
-                            icon_buttons.map(e => {
+                            icon_buttons.map((e, index) => {
                                 return (
-                                    <IconButton IconImage={e[0]} />
+                                    <IconButton key={index} IconImage={e[0]} />
                                 )
                             })
                         }
@@ -75,9 +75,9 @@ function Appbar() {
                 {/* container of drop down menu items accessibe when screen is small */}
                 <div className={`flex p-1 rounded-b-[12px] flex-col fixed mt-16 bg-white sm:hidden shadow-xl ${IconButtonSmallShown ? "translate-y-0 opacity-100" : "-translate-y-1 opacity-0"} transition-all`}>
                         {
-                            icon_buttons.map(e => {
+                            icon_buttons.map((e, index) => {
                                 return (
-                                    <IconButtonSmallScreen IconImage={e[0]} />
+                                    <IconButtonSmallScreen key={index} IconImage={e[0]} />
                                 )
                             })
                         }
