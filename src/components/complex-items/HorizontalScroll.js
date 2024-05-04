@@ -45,6 +45,14 @@ const HorizontalScroll = ({ children, className, scrollEndFunc=() => {} }) => {
     }
   };
 
+  const handleTouchMove = (event) => {
+    const isAtEnd = scrollContainerRef.current.scrollLeft + event.currentTarget.clientWidth >= event.currentTarget.scrollWidth;
+    if (isAtEnd) {
+        scrollEndFunc()
+        console.log("end")
+    }
+  };
+
   return (
     <div
       ref={scrollContainerRef}
@@ -53,7 +61,7 @@ const HorizontalScroll = ({ children, className, scrollEndFunc=() => {} }) => {
       onMouseUp={handleMouseUp}
       onMouseMove={handleMouseMove}
       onWheel={handleWheel}
-      onTouchMove={handleMouseMove}
+      onTouchMove={handleTouchMove}
       style={{
         overflowX: 'scroll',
         display: 'flex',
