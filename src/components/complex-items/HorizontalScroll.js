@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 
-const HorizontalScroll = ({ children, className }) => {
+const HorizontalScroll = ({ children, className, scrollEndFunc=() => {} }) => {
   const scrollContainerRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
@@ -17,15 +17,32 @@ const HorizontalScroll = ({ children, className }) => {
 
   const handleMouseMove = (event) => {
     if (!isDragging) return;
-
+    const currentScrollLeft = scrollContainerRef.current.scrollLeft
     const deltaX = event.clientX - startX;
     scrollContainerRef.current.scrollLeft -= deltaX;
     setStartX(event.clientX); // Update startX for next drag movement
+    const isAtEnd = scrollContainerRef.current.scrollLeft + scrollContainerRef.current.clientWidth >= scrollContainerRef.current.scrollWidth;
+    if (isAtEnd) {
+      if (currentScrollLeft != scrollContainerRef.current.scrollLeft)
+      {
+        scrollEndFunc()
+        console.log("end")
+      }
+    }
   };
 
   const handleWheel = (event) => {
     if (event.deltaY === 0) return;
+    const currentScrollLeft = scrollContainerRef.current.scrollLeft
     scrollContainerRef.current.scrollBy(event.deltaY/8, 0);
+    const isAtEnd = scrollContainerRef.current.scrollLeft + scrollContainerRef.current.clientWidth >= scrollContainerRef.current.scrollWidth;
+    if (isAtEnd) {
+      if (currentScrollLeft != scrollContainerRef.current.scrollLeft)
+      {
+        scrollEndFunc()
+        console.log("end")
+      }
+    }
   };
 
   return (
