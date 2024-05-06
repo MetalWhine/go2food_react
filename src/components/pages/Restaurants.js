@@ -8,7 +8,7 @@ import axios from "axios";
 
 function CategoryImage ({category}) {
     return (
-        <img className="h-8 w-8 md:w-10 md:h-10 " src={`/images/food-categories/${category}.png`}></img>
+        <img className="h-6 w-6 sm:w-8 sm:h-8 md:w-10 md:h-10 " src={`/images/food-categories/${category}.png`}></img>
     )
 }
 
@@ -70,8 +70,8 @@ function Restaurant () {
                 <div className="bg-green-600 flex flex-row space-x-4 rounded-lg w-full">
 
                     {/* restaurant name and restaurant picture */}
-                    <img className="md:w-52 sm:w-44 w-32 md:h-52 sm:h-44 h-32 rounded-lg ml-4 pointer-events-none my-4" style={{objectFit:"cover"}} src={restaurantData.pictureURL}></img>
-                    <div className="flex flex-col w-full text-white space-y-2">
+                    <img className="md:w-44 sm:w-32 w-24 md:h-44 sm:h-32 h-24 rounded-lg ml-4 pointer-events-none my-4" style={{objectFit:"cover"}} src={restaurantData.pictureURL}></img>
+                    <div className="flex flex-col w-full text-white space-y-0.5 md:space-y-1.5">
                         <div>
                             <h3 className="md:text-2xl sm:text-xl text-lg mt-4 font-bold line-clamp-1">{restaurantData.name}</h3>
                         </div>
