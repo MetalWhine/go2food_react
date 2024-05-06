@@ -61,13 +61,7 @@ function Restaurant () {
 
     }, [])
 
-    if (!restaurantData)
-    {
-        return (
-            <LoadingOverlay />
-        )
-    }
-    else
+    if (restaurantData.length !== 0)
     {
         return (
             <div className="pt-[72px] flex flex-col md:flex-row py-2 mx-[12.5%] sm:mx-[15%] space-y-4">
@@ -111,6 +105,12 @@ function Restaurant () {
                     
                 </div>
             </div>
+        )
+    }
+    else
+    {
+        return (
+            <LoadingOverlay />
         )
     }
 }
