@@ -61,7 +61,7 @@ function Restaurant () {
 
     }, [])
 
-    if (loading)
+    if (!restaurantData)
     {
         return (
             <LoadingOverlay />
