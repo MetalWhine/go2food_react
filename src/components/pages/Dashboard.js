@@ -11,12 +11,12 @@ import { UseUserInfo, UsePositionInfo } from '../../store';
 import { Skeleton } from '@mui/material';
 
 const list_categories = [
-                         ["Burgers"], 
-                         ["Chickens"],
-                         ["Asians"],
-                         ["Seafoods"],
-                         ["Pizzas"],
-                         ["Beverages"],
+                         ["burgers"], 
+                         ["chickens"],
+                         ["asians"],
+                         ["seafood"],
+                         ["pizzas"],
+                         ["beverages"],
                         ]
 
 const skeleton_amount = [ 1,
@@ -67,12 +67,12 @@ function Dashboard () {
     const [list_restaurants, SetListRestaurants] = useState([])
 
     const list_recent_orders = [
-        ["Legendary Laksa", 0.60, 4.6, "images/restaurant-templates/laksa.png"], 
-        ["Ayam Goreng Mas Ganjar", 1.60, 4.2, "images/restaurant-templates/ayam-goreng.png"],
-        ["Mie Bakso Pak Kumis", 0.83, 5.0, "images/restaurant-templates/mie-bakso.png"],
-        ["Nasi Lemak Uncle Ato", 2.50, 4.5, "images/restaurant-templates/nasi-lemak.png"],
-        ["Nasi Ayam Pak Jarwo", 0.69, 4.8, "images/restaurant-templates/nasi-ayam.png"],
-        ["Soto Ayam Madura Mas Tretan", 1.89, 4.1, "images/restaurant-templates/soto-ayam.png"],
+        ["1", "Legendary Laksa", 0.60, 4.6, "images/restaurant-templates/laksa.png"], 
+        ["2", "Ayam Goreng Mas Ganjar", 1.60, 4.2, "images/restaurant-templates/ayam-goreng.png"],
+        ["3", "Mie Bakso Pak Kumis", 0.83, 5.0, "images/restaurant-templates/mie-bakso.png"],
+        ["4", "Nasi Lemak Uncle Ato", 2.50, 4.5, "images/restaurant-templates/nasi-lemak.png"],
+        ["5", "Nasi Ayam Pak Jarwo", 0.69, 4.8, "images/restaurant-templates/nasi-ayam.png"],
+        ["6", "Soto Ayam Madura Mas Tretan", 1.89, 4.1, "images/restaurant-templates/soto-ayam.png"],
         ]
     
     // update the list of restaurants on intial page load
@@ -86,10 +86,11 @@ function Dashboard () {
                 .then((response) => {
                   for (let index = 0; index < response.data.length; index++)
                   {
-                    const arr = [[response.data[index]['name'],
-                                 response.data[index]['distance'],
-                                 response.data[index]['rating'],
-                                 response.data[index]['pictureURL']
+                    const arr = [[response.data[index]["_id"],
+                                  response.data[index]['name'],
+                                  response.data[index]['distance'],
+                                  response.data[index]['rating'],
+                                  response.data[index]['pictureURL']
                                 ]]
                     SetListRestaurants(list_restaurants => [...list_restaurants, ...arr])
                   }
@@ -111,10 +112,11 @@ function Dashboard () {
                 .then((response) => {
                   for (let index = 0; index < response.data.length; index++)
                   {
-                    const arr = [[response.data[index]['name'],
-                                 response.data[index]['distance'],
-                                 response.data[index]['rating'],
-                                 response.data[index]['pictureURL']
+                    const arr = [[response.data[index]["_id"],
+                                  response.data[index]['name'],
+                                  response.data[index]['distance'],
+                                  response.data[index]['rating'],
+                                  response.data[index]['pictureURL']
                                 ]]
                     SetListRestaurants(list_restaurants => [...list_restaurants, ...arr])
                     SetRecommendedLoading(false)
@@ -167,7 +169,7 @@ function Dashboard () {
                         locUpdated ? 
                         list_restaurants.map((e, index) => {
                             return (
-                                <RestaurantCard key={index} name={e[0]} range={e[1]} rating={e[2]} img_url={e[3]} />
+                                <RestaurantCard key={index} id={e[0]} name={e[1]} range={e[2]} rating={e[3]} img_url={e[4]} />
                             )
                         }) 
                         :
@@ -188,7 +190,7 @@ function Dashboard () {
                     {
                         list_recent_orders.map((e, index) => {
                             return (
-                                <RestaurantCard key={index} name={e[0]} range={e[1]} rating={e[2]} img_url={e[3]} />
+                                <RestaurantCard key={index} id={e[0]} name={e[1]} range={e[2]} rating={e[3]} img_url={e[4]} />
                             )
                         })
                     }
