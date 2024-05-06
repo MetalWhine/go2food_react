@@ -167,11 +167,18 @@ function Dashboard () {
                 <HorizontalScroll className={"no-scrollbar select-none my-4 rounded-lg"} scrollEndFunc={recommendedAtEnd}>
                     {
                         locUpdated ? 
-                        list_restaurants.map((e, index) => {
-                            return (
-                                <RestaurantCard key={index} id={e[0]} name={e[1]} range={e[2]} rating={e[3]} img_url={e[4]} />
-                            )
-                        }) 
+                            list_restaurants.length !== 0 ?
+                            list_restaurants.map((e, index) => {
+                                return (
+                                    <RestaurantCard key={index} id={e[0]} name={e[1]} range={e[2]} rating={e[3]} img_url={e[4]} />
+                                )
+                            }) 
+                            :
+                            skeleton_amount.map((e, index) => {
+                                return (
+                                    <RestaurantCardSkeleton key={index} />
+                                )
+                            })
                         :
                         skeleton_amount.map((e, index) => {
                             return (
@@ -188,9 +195,23 @@ function Dashboard () {
                 <h1 className="font-bold text-lg sm:text-xl md:text-2xl">Recent Orders</h1>
                 <HorizontalScroll className={"no-scrollbar select-none my-4 rounded-lg"}>
                     {
-                        list_recent_orders.map((e, index) => {
+                        locUpdated ? 
+                            list_restaurants.length !== 0 ?
+                            list_restaurants.map((e, index) => {
+                                return (
+                                    <RestaurantCard key={index} id={e[0]} name={e[1]} range={e[2]} rating={e[3]} img_url={e[4]} />
+                                )
+                            }) 
+                            :
+                            skeleton_amount.map((e, index) => {
+                                return (
+                                    <RestaurantCardSkeleton key={index} />
+                                )
+                            })
+                        :
+                        skeleton_amount.map((e, index) => {
                             return (
-                                <RestaurantCard key={index} id={e[0]} name={e[1]} range={e[2]} rating={e[3]} img_url={e[4]} />
+                                <RestaurantCardSkeleton key={index} />
                             )
                         })
                     }
