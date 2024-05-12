@@ -1,10 +1,26 @@
 import React from "react";
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
+import { UseCartOrder } from "../../store";
 
 
-function MenuCard ({id, pictureUrl, name, description, category, price}) {
+function MenuCard ({restaurant_id, id, pictureUrl, name, description, category, price}) {
+    // global states
+    const {items, AddItems} = UseCartOrder((state) => ({
+        items: state.items,
+        AddItems: state.AddItems
+    }));
 
+    // functions
+    const getItemAmount = (id) => {
+        const item = items.find((e) => e[0] === id)
+        if (item)
+        {
+            return item[1]
+        }
+
+        return 0
+    }
     
 
     return (
@@ -28,18 +44,18 @@ function MenuCard ({id, pictureUrl, name, description, category, price}) {
                 <div>
                     {/* plus and minus button */}
                     <div className="flex flex-row">
-                        <button className="text-white bg-red-500 hover:bg-red-600 active:bg-red-700 rounded-md">
+                        <button className="text-white bg-red-500 hover:bg-red-600 active:bg-red-700 rounded-l-md">
                             <RemoveIcon />
                         </button>
 
                         {/* order count */}
-                        <div className="text-black text-sm md:text-base mx-auto w-8 sm:w-8 px-1 sm:px-2 py-[2px] bg-white rounded-md none">
+                        <div className="text-black text-sm md:text-base mx-auto w-8 sm:w-8 px-1 sm:px-2 py-[2px] bg-white">
                             <div className="flex justify-center">
-                                <p className="text-sm sm:text-base select-none">0</p>
+                                <p className="text-sm sm:text-base select-none">{getItemAmount(id)}</p>
                             </div>
                         </div>
 
-                        <button className="text-white bg-green-500 hover:bg-green-600 active:bg-green-700 rounded-md">
+                        <button onClick={() => {AddItems(restaurant_id, id)}} className="text-white bg-green-500 hover:bg-green-600 active:bg-green-700 rounded-r-md">
                             <AddIcon />
                         </button>
                     </div>
