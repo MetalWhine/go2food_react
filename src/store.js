@@ -54,7 +54,6 @@ export const UseCartOrder = create((set, get) => ({
     Removeitems: (restaurant, item_id) => {
         const {restaurant_id} = get()
         const {items} = get()
-        console.log(items)
 
         set(
             produce((state) => {
