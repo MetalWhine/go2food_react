@@ -78,8 +78,6 @@ export const UseCartOrder = create((set, get) => ({
                         const filteredItems = state.items.filter(
                             ([existingItemId]) => existingItemId !== item_id
                         );
-                        
-                        console.log(filteredItems)
                         state.items = filteredItems
                     }
                 }
