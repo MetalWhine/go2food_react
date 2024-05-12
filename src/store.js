@@ -72,15 +72,16 @@ export const UseCartOrder = create((set, get) => ({
                     {
                         state.items[existingItemIndex][1] -= 1;
                     }
-                }
-                else
-                {
-                    // filter the items list by removing the item (doesnt work for now i dont know how to fix this tbh)
-                    const filteredItems = state.items.filter(
-                        (e) => e[0] === item_id
-                      );
-                    
-                    console.log(filteredItems)
+                    else
+                    {
+                        // filter the items list by removing the item (doesnt work for now i dont know how to fix this tbh)
+                        const filteredItems = state.items.filter(
+                            ([existingItemId]) => existingItemId !== item_id
+                        );
+                        
+                        console.log(filteredItems)
+                        state.items = filteredItems
+                    }
                 }
               } 
             })
