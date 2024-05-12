@@ -6,9 +6,10 @@ import { UseCartOrder } from "../../store";
 
 function MenuCard ({restaurant_id, id, pictureUrl, name, description, category, price}) {
     // global states
-    const {items, AddItems} = UseCartOrder((state) => ({
+    const {items, AddItems, Removeitems} = UseCartOrder((state) => ({
         items: state.items,
-        AddItems: state.AddItems
+        AddItems: state.AddItems,
+        Removeitems: state.Removeitems
     }));
 
     // functions
@@ -44,7 +45,7 @@ function MenuCard ({restaurant_id, id, pictureUrl, name, description, category, 
                 <div>
                     {/* plus and minus button */}
                     <div className="flex flex-row">
-                        <button className="text-white bg-red-500 hover:bg-red-600 active:bg-red-700 rounded-l-md">
+                        <button onClick={() => {Removeitems(restaurant_id, id)}} className="text-white bg-red-500 hover:bg-red-600 active:bg-red-700 rounded-l-md">
                             <RemoveIcon />
                         </button>
 
