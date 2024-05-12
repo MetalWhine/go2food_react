@@ -78,6 +78,7 @@ function Restaurant () {
         GetMenuData()
     }, [restaurant_id, locUpdated])
 
+
     
 
     if (restaurantData.length !== 0)
@@ -130,7 +131,7 @@ function Restaurant () {
                         menuData !== 0 ? 
                         menuData.map((e, index) => {
                             return (
-                                <MenuCard key={index} id={e["_id"]} pictureUrl={e["pictureURL"]} name={e["name"]} description={e["description"]} category={e["category"]} price={e["price"]}/>
+                                <MenuCard key={index} restaurant_id={restaurant_id["id"]} id={e["_id"]} pictureUrl={e["pictureURL"]} name={e["name"]} description={e["description"]} category={e["category"]} price={e["price"]}/>
                             )
                         })
                         :
