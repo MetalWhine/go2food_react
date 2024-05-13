@@ -36,7 +36,7 @@ export const UseCartOrder = create((set, get) => ({
                 // only set the new data if restaurant_id is the same with menu_id
                 if (restaurant === restaurant_id)
                 {
-                    state.items[existingItemIndex][1] += 1;
+                  state.items[existingItemIndex][1] += 1;
                 }
 
               } 
@@ -53,7 +53,6 @@ export const UseCartOrder = create((set, get) => ({
 
     Removeitems: (restaurant, item_id) => {
         const {restaurant_id} = get()
-        const {items} = get()
 
         set(
             produce((state) => {
@@ -68,7 +67,7 @@ export const UseCartOrder = create((set, get) => ({
                 if (restaurant === restaurant_id)
                 {
                     // reduce one count if the new count is not less than zero
-                    if (state.items[existingItemIndex][1] - 1 >= 0)
+                    if (state.items[existingItemIndex][1] - 1 >= 1)
                     {
                         state.items[existingItemIndex][1] -= 1;
                     }
