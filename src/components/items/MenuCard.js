@@ -6,10 +6,11 @@ import { UseCartOrder } from "../../store";
 
 function MenuCard ({restaurant_id, id, pictureUrl, name, description, category, price}) {
     // global states
-    const {items, AddItems, Removeitems} = UseCartOrder((state) => ({
+    const {items, AddItems, Removeitems, CalculateTotalPrice} = UseCartOrder((state) => ({
         items: state.items,
         AddItems: state.AddItems,
-        Removeitems: state.Removeitems
+        Removeitems: state.Removeitems,
+        CalculateTotalPrice: state.CalculateTotalPrice
     }));
 
     // functions
@@ -17,7 +18,7 @@ function MenuCard ({restaurant_id, id, pictureUrl, name, description, category, 
         const item = items.find((e) => e[0] === id)
         if (item)
         {
-            return item[1]
+            return item[3]
         }
 
         return 0
@@ -56,7 +57,7 @@ function MenuCard ({restaurant_id, id, pictureUrl, name, description, category, 
                             </div>
                         </div>
 
-                        <button onClick={() => {AddItems(restaurant_id, id)}} className="text-white bg-green-500 hover:bg-green-600 active:bg-green-700 rounded-r-md">
+                        <button onClick={() => {AddItems(restaurant_id, id, name, price)}} className="text-white bg-green-500 hover:bg-green-600 active:bg-green-700 rounded-r-md">
                             <AddIcon />
                         </button>
                     </div>
@@ -67,7 +68,6 @@ function MenuCard ({restaurant_id, id, pictureUrl, name, description, category, 
                     <p className="text-sm md:text-base text-gray-200 font-bold">{price+"$"}</p>
                 </div>
             </div>
-
 
         </div>
     )

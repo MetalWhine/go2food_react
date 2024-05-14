@@ -15,13 +15,24 @@ export const UsePositionInfo = create ((set) => ({
     UpdateLongitude: (longitude) => set(() => ({ longitude: longitude}))
 }))
 
+function CalculateTotalPrice (items) {
+  let total = 0
+  for (let i = 0; i < items.length; i++)
+  {
+   var item = items[i]
+   total += item[2] * item[3]
+  }
+  return total
+ }
+
 export const UseCartOrder = create((set, get) => ({
     restaurant_id: "null",
     items: [],
+    totalPrice: 0,
 
     UpdateRestaurantId: (restaurant_id) => set(() => ({ restaurant_id: restaurant_id})),
 
-    AddItems: (restaurant, item_id) => {
+    AddItems: (restaurant, item_id, name, price) => {
         const {restaurant_id} = get()
 
         set(
@@ -36,7 +47,7 @@ export const UseCartOrder = create((set, get) => ({
                 // only set the new data if restaurant_id is the same with menu_id
                 if (restaurant === restaurant_id)
                 {
-                  state.items[existingItemIndex][1] += 1;
+                  state.items[existingItemIndex][3] += 1;
                 }
 
               } 
@@ -45,10 +56,12 @@ export const UseCartOrder = create((set, get) => ({
               {
                 state.restaurant_id = restaurant
                 // add a new item_id with count of one
-                state.items.push([item_id, 1]);
+                state.items.push([item_id, name, price, 1]);
               }
+              state.totalPrice = CalculateTotalPrice(state.items)
             })
           );
+
     },
 
     Removeitems: (restaurant, item_id) => {
@@ -67,9 +80,9 @@ export const UseCartOrder = create((set, get) => ({
                 if (restaurant === restaurant_id)
                 {
                     // reduce one count if the new count is not less than zero
-                    if (state.items[existingItemIndex][1] - 1 >= 1)
+                    if (state.items[existingItemIndex][3] - 1 >= 1)
                     {
-                        state.items[existingItemIndex][1] -= 1;
+                        state.items[existingItemIndex][3] -= 1;
                     }
                     else
                     {
@@ -80,9 +93,11 @@ export const UseCartOrder = create((set, get) => ({
                         state.items = filteredItems
                     }
                 }
-              } 
+              }
+              state.totalPrice = CalculateTotalPrice(state.items)
             })
           );
+
     }
 
 }))

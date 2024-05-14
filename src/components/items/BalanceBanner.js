@@ -102,7 +102,7 @@ function BalanceBanner () {
                         </div>
                     </div>
 
-                    {/* buttonn */}
+                    {/* button information */}
                     <div className="flex flex-col px-2 text-white">
                         <div className="flex flex-[1] items-center">
                             <p>Top-up</p>
