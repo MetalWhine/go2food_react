@@ -66,7 +66,7 @@ function BalanceBanner () {
 
     return (
         // main container
-        <div className="z-[8]">
+        <div className="z-[100]">
 
             <div onClick={balanceBarToggleClicked} id="BalanceBarOverlay" className="hidden fixed w-full h-[100vh] bg-black bg-opacity-35"></div>
             {/* button to toggle balance bar while in small devices*/}
@@ -75,7 +75,7 @@ function BalanceBanner () {
             </div>
 
             {/* visibe only on big screen*/}
-            <div id="BalanceBar" className="bg-green-700 hidden min-[1840px]:block p-1 right-[16px] fixed mt-[72px] rounded-[12px] shadow-xl animate-nav-bars-menu-popup">
+            <div id="BalanceBar" className="bg-green-700 hidden min-[1840px]:block p-1 right-[16px] fixed mt-[72px] rounded-[12px] shadow-xl animate-nav-bars-menu-popup z-[100]">
                 <div className="flex">
 
                     {/* balance */}

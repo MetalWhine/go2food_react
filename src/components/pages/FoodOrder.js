@@ -1,34 +1,51 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom'
-import RestaurantRoundedIcon from '@mui/icons-material/RestaurantRounded';
+import { React, useState, useEffect } from 'react';
+import LoadingOverlay from '../items/LoadingOverlay';
+import axios from 'axios';
+import { BackendURL } from '../configs/GlobalVar';
+import { UseUserInfo } from '../../store';
+import { useLocation } from 'react-router-dom';
 
-function FoodOrder () {
-    const navigate = useNavigate()
-    const navigateMe = (e) => {
-        e.preventDefault()
-        navigate("/")
-    }
-
+function FoodOrder({ActiveOrderData}) {
+    
     return (
-        <div className='flex flex-col items-center justify-center overflow-auto bg-white h-screen w-screen space-y-10'>
-            <div className='text-center space-y-2'>
-                <h3 className='z-50 text-4xl'>
-                    This page is not ready yet: <strong>FoodOrder</strong>
-                </h3>
-                <p className='text-lg'>
-                    Take me back to the home page
-                </p>
-            </div>
-            <div className=''>
-            <button className='text-lg text-green-700 take_me_home opacity-50 border-b border-b-transparent hover:opacity-100 hover:border-b-current transition-all disabled:opacity-20' onClick={navigateMe}>
-                <div className='flex flex-row'>
-                    <div className='px-2'>
-                        <RestaurantRoundedIcon />
-                    </div>
-                    Back 2 Food
-                </div>
-            </button>
-            </div>
+        <div className="pt-[120px]">
+            {
+                !ActiveOrderData ?
+                    <LoadingOverlay />
+                    :
+                    ActiveOrderData.length === 0 ?
+                        <div className="flex flex-col items-center">
+                            <h1 className="text-xl font-bold">You have no active orders...</h1>
+                            <h2 className="text-lg text-black text-opacity-80"> Go to a restaurant and start ordering!</h2>
+                        </div>
+                        :
+                        ActiveOrderData["status"] === "pending" ?
+                            <div>
+                                <div className='flex flex-col space-y-3 sm:space-y-4 justify-center items-center bg-white'>
+                                    <h1 className="text-lg sm:text-xl font-bold"> The restaurant is receiving your order</h1>
+                                    <div className="flex flex-row space-x-1 sm:space-x-2 z-[0]">
+                                        <div className='sm:h-4 sm:w-4 h-2 w-2 bg-black bg-opacity-50 rounded-full animate-bounce [animation-delay:-0.3s]'></div>
+                                        <div className='sm:h-4 sm:w-4 h-2 w-2 bg-black bg-opacity-50 rounded-full animate-bounce [animation-delay:-0.15s]'></div>
+                                        <div className='sm:h-4 sm:w-4 h-2 w-2 bg-black bg-opacity-50 rounded-full animate-bounce'></div>
+                                    </div>
+                                </div>
+                            </div>
+                            :
+                            <div>
+                                <div className='flex flex-col space-y-3 sm:space-y-4 justify-center items-center bg-white'>
+                                    <div className="flex flex-col items-center justify-center">
+                                        <h1 className="text-lg sm:text-xl font-bold"> The restaurant has accepted your order</h1>
+                                        <h2 className="text-lg sm:text-xl font-bold text-black text-opacity-50"> Let the restaurant cook...</h2>
+                                    </div>
+                                    <div className="flex flex-row space-x-1 sm:space-x-2 z-[0]">
+                                        <p className='text-base rounded-full animate-bounce [animation-delay:-0.3s]'>🔥</p>
+                                        <p className='text-base rounded-full animate-bounce [animation-delay:-0.15s]'>🔥</p>
+                                        <p className='text-base rounded-full animate-bounce'>🔥</p>
+                                    </div>
+                                </div>
+                            </div>
+            }
+
         </div>
     )
 }
