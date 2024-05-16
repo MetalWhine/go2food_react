@@ -2,8 +2,10 @@ import {create} from 'zustand';
 import { produce } from 'immer';
 
 export const UseUserInfo = create((set) => ({
+    user_id: "id",
     username: 'user',
 
+    UpdateUserId: (user_id) => set(() => ({ user_id: user_id})),
     UpdateUserName: (username) => set(() => ({ username: username}))
 }))
 
@@ -22,7 +24,7 @@ function CalculateTotalPrice (items) {
    var item = items[i]
    total += item[2] * item[3]
   }
-  return total
+  return Math.round(total*100)/100;
  }
 
 export const UseCartOrder = create((set, get) => ({
@@ -98,6 +100,12 @@ export const UseCartOrder = create((set, get) => ({
             })
           );
 
+    },
+
+    RemoveCartItems: () => {
+      set(produce((state) => {
+        state.items = []
+      }))
     }
 
 }))

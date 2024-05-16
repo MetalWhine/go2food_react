@@ -4,13 +4,13 @@ import BalanceBanner from "./items/BalanceBanner";
 import NavSideBar from "./items/NavSideBar";
 import OrderBar from "./items/OrderBar";
 
-function Navbar () {
+function Navbar ({notifyOrderAlreadyOrder = () => {}, notifyOrderSuccess = () => {}}) {
     return (
         <div>
             <Appbar />
             <NavSideBar />
             <BalanceBanner />
-            <OrderBar />
+            <OrderBar notifyOrderAlreadyOrder={notifyOrderAlreadyOrder} notifyOrderSuccess={notifyOrderSuccess} />
         </div>
     )
 }

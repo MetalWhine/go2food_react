@@ -7,8 +7,9 @@ import { BackendURL } from '../configs/GlobalVar';
 import LoadingOverlay from '../items/LoadingOverlay';
 import { UseUserInfo } from '../../store';
 
-function RequireAuthWithNavbar({ children }) {
-  const {UpdateUserName} = UseUserInfo((state) => ({
+function RequireAuthWithNavbar({ notifyOrderAlreadyOrder = () => {}, notifyOrderSuccess = () => {} , children }) {
+  const {UpdateUserId, UpdateUserName} = UseUserInfo((state) => ({
+    UpdateUserId: state.UpdateUserId,
     UpdateUserName: state.UpdateUserName
   }));
   const [initialCheckValue, setInitialCheckValue] = useState(true);
@@ -49,6 +50,7 @@ function RequireAuthWithNavbar({ children }) {
         }
         else {
           const user_id = response.data["detail"]["user_id"]
+          UpdateUserId(user_id)
           get_user_info(user_id)
           return true
         }
@@ -93,7 +95,7 @@ function RequireAuthWithNavbar({ children }) {
   {
     return (
       <div>
-        <Navbar />
+        <Navbar notifyOrderAlreadyOrder={notifyOrderAlreadyOrder} notifyOrderSuccess={notifyOrderSuccess} />
         {children}
       </div>
     )

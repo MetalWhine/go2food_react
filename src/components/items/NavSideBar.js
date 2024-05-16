@@ -115,13 +115,13 @@ function NavSideBar() {
     
     return (
         
-        <div className="z-[9]">
+        <div className="">
             <div onClick={navSideBarBurgerButtonCliked} id="navSideBarOverlay" className="hidden fixed w-full h-[100vh] bg-black bg-opacity-35"></div>
             <div id="navSideBarBurgerButton" onClick={navSideBarBurgerButtonCliked} className="bg-slate-50 ml-2 p-2 fixed mt-[72px] block min-[1650px]:hidden rounded-[12px] hover:bg-gray-300 active:bg-gray-400 shadow-xl">
                 <MenuOutlinedIcon />
             </div>
 
-            <div id="navSideBar" className=" bg-white fixed mt-16 w-[250px] rounded-br-[20px] hidden min-[1650px]:block shadow-xl z-[7] animate-nav-bars-menu-popup">
+            <div id="navSideBar" className=" bg-white fixed mt-16 w-[250px] rounded-br-[20px] hidden min-[1650px]:block shadow-xl animate-nav-bars-menu-popup z-[100]">
 
                 {/* nav bar buttons div container */}
                 <div className="flex flex-col p-4">
