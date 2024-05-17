@@ -5,6 +5,8 @@ import HorizontalScroll from '../complex-items/HorizontalScroll';
 import CategoryCard from '../items/CategoryCard';
 import RestaurantCard from '../items/RestaurantCard';
 import RestaurantCardSkeleton from '../items/RestaurantCardSkeleton';
+import LoadingOverlay from '../items/LoadingOverlay';
+import { wait } from '../utils/Functionabilities';
 import { useLocation } from 'react-router-dom';
 import { BackendURL } from '../configs/GlobalVar';
 import { UseUserInfo, UsePositionInfo } from '../../store';
@@ -27,26 +29,15 @@ const skeleton_amount = [ 1,
                           6
                         ]
 
-function Dashboard () {
-    let location = useLocation()
-    const [locUpdated, SetLocUpdated] = useState(false);
-    const [recommendedLoading, SetRecommendedLoading] = useState(false);
-
-    const recommendedAtEnd = () => {
-        // if (recommendedLoading)
-        // {
-        //     SetRecommendedLoading(false)
-        // }
-        // else
-        // {
-        //     SetRecommendedLoading(true)
-        // }
-
-        SetRecommendedLoading(true)
-    }
-    
-    const {username} = UseUserInfo((state) => ({
-        username: state.username
+function Dashboard ({notifyInsufficientBalance = () => {}}) {
+    // global states
+    const {user_id, username, premium, balance, UpdateBalance, UpdatePremium} = UseUserInfo((state) => ({
+        user_id: state.user_id,
+        username: state.username,
+        premium: state.premium,
+        balance: state.balance,
+        UpdateBalance: state.UpdateBalance,
+        UpdatePremium: state.UpdatePremium
       }));
 
     const {latitude, longitude, UpdateLatitude, UpdateLongitude} = UsePositionInfo((state) => ({
@@ -56,6 +47,20 @@ function Dashboard () {
         UpdateLongitude: state.UpdateLongitude
       }));
 
+    // local states
+    let location = useLocation()
+    const [Loading, SetLoading] = useState(false);
+    const [locUpdated, SetLocUpdated] = useState(false);
+    const [recommendedLoading, SetRecommendedLoading] = useState(false);
+    const [recentRestaurantLoading, SetRecentRestaurantLoading] = useState(false);
+    const [list_restaurants, SetListRestaurants] = useState([])
+    const [list_recent_restaurants, SetListRecentRestaurants] = useState(null)
+
+    // functions
+    const recommendedAtEnd = () => {
+        SetRecommendedLoading(true)
+    }
+
     useEffect(() => {
         navigator.geolocation.getCurrentPosition((pos) => {
             UpdateLongitude(pos.coords.longitude);
@@ -64,17 +69,6 @@ function Dashboard () {
         })
     }, [location])
 
-    const [list_restaurants, SetListRestaurants] = useState([])
-
-    const list_recent_orders = [
-        ["1", "Legendary Laksa", 0.60, 4.6, "images/restaurant-templates/laksa.png"], 
-        ["2", "Ayam Goreng Mas Ganjar", 1.60, 4.2, "images/restaurant-templates/ayam-goreng.png"],
-        ["3", "Mie Bakso Pak Kumis", 0.83, 5.0, "images/restaurant-templates/mie-bakso.png"],
-        ["4", "Nasi Lemak Uncle Ato", 2.50, 4.5, "images/restaurant-templates/nasi-lemak.png"],
-        ["5", "Nasi Ayam Pak Jarwo", 0.69, 4.8, "images/restaurant-templates/nasi-ayam.png"],
-        ["6", "Soto Ayam Madura Mas Tretan", 1.89, 4.1, "images/restaurant-templates/soto-ayam.png"],
-        ]
-    
     // update the list of restaurants on intial page load
     useEffect(() => {
         if (locUpdated)
@@ -128,8 +122,67 @@ function Dashboard () {
         }
     }, [recommendedLoading])
 
+    // update the list of recent restaurants based on recent orders
+    useEffect(() => {
+        if (locUpdated)
+        {
+            axios.post(`${BackendURL}/get_recent_restaurants/`, {
+                id: user_id,
+                latitude: latitude,
+                longitude: longitude
+              })
+                .then((response) => {
+                  var restaurants = []
+                  for (let index = 0; index < response.data.length; index++)
+                  {
+                    const arr = [ 
+                                    response.data[index]["_id"],
+                                    response.data[index]['name'],
+                                    response.data[index]['distance'],
+                                    response.data[index]['rating'],
+                                    response.data[index]['pictureURL']
+                                ]
+                    restaurants.push(arr)
+                  }
+                  SetListRecentRestaurants(restaurants)
+                })
+                .catch((error) => {
+                  console.log(error, 'error');
+                });
+        }
+    }, [locUpdated])
+
+    // upgrade user to premium
+    const UpgradeToPremium = async () => {
+        SetLoading(true)
+        axios.post(`${BackendURL}/update_user_to_premium/`, {
+            id: user_id,
+        })
+        .then(async (response) => {
+            if (response.data["detail"] === "insufficient balance")
+            {
+                await wait(300)
+                notifyInsufficientBalance()
+                SetLoading(false)
+            }
+            else if (response.data["detail"] === "the user is now a premium user")
+            {
+                await wait(300)
+                var new_balance = balance  - 9.99
+                UpdateBalance(Math.round(new_balance*100)/100)
+                UpdatePremium(true)
+                SetLoading(false)
+            }
+        })
+        .catch((error) => {
+            console.log(error, 'error');
+            SetLoading(false)
+        });
+    }
+
     return (
         <div className="pt-[72px]">
+            {Loading ? <LoadingOverlay/>: <div/>}
             {/* welcome message + search bar */}
             <div className="flex flex-col md:flex-row py-2 mx-[12.5%] sm:mx-[15%]">
                 <div className='md:p-4 sm:p-2 flex flex-[1] items-center justify-center md:justify-start'>
@@ -140,11 +193,25 @@ function Dashboard () {
                 </div>
             </div>
             
-            {/* Discount info*/}
-            <div className="bg-green-600 text-white mx-[12.5%] sm:mx-[15%] p-2 m-2 rounded-lg">
-                <h1 className="text-lg sm:text-xl md:text-2xl font-bold">Get Discount Voucher</h1>
-                <h1 className="text-lg sm:text-xl md:text-2xl font-bold">Up to 20%</h1>
-                <h2 className="text-xs sm:text-sm md:text-base"> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt. </h2>
+            {/* Discount info / Premium Indicator */}
+            <div className="bg-green-600 text-white mx-[12.5%] sm:mx-[15%] px-4 py-3 m-2 rounded-lg space-y-3">
+                {premium ?
+                    <div>
+                        <h1 className="text-lg sm:text-xl md:text-2xl font-bold">You are a premium user!</h1>
+                        <h2 className="mt-2 text-xs sm:text-sm md:text-base"> enjoy fee-less delivery and no service fee! <br/> what are you waiting for? Start ordering now! </h2>
+                    </div>
+                    :
+                    <div className="flex flex-col space-y-2">
+                        <div>
+                            <h1 className="text-lg sm:text-xl md:text-2xl font-bold">Be a premium user!</h1>
+                            <h1 className="text-lg sm:text-xl md:text-2xl font-bold">0$ delivery and service fees</h1>
+                            <h2 className="text-xs sm:text-sm md:text-base"> be a premium member by paying {<strong>9.99$</strong>} for no service fees and no delivery fees </h2>
+                        </div>
+                        <button onClick={() => {UpgradeToPremium()}} className="z-[0] py-1.5 px-2 sm:py-2 sm:px-4 text-sm sm:text-base flex items-start text-black font-semibold w-fit bg-white rounded-md hover:bg-gray-300 active:bg-gray-600 active:text-white drop-shadow-md">
+                            UPGRADE
+                        </button>
+                    </div>
+                }
             </div>
 
             {/*Categories container*/}
@@ -196,26 +263,31 @@ function Dashboard () {
                 <HorizontalScroll className={"no-scrollbar select-none my-4 rounded-lg"}>
                     {
                         locUpdated ? 
-                            list_restaurants.length !== 0 ?
-                            list_restaurants.map((e, index) => {
-                                return (
-                                    <RestaurantCard key={index} id={e[0]} name={e[1]} range={e[2]} rating={e[3]} img_url={e[4]} />
-                                )
-                            }) 
-                            :
-                            skeleton_amount.map((e, index) => {
-                                return (
-                                    <RestaurantCardSkeleton key={index} />
-                                )
-                            })
-                        :
-                        skeleton_amount.map((e, index) => {
-                            return (
-                                <RestaurantCardSkeleton key={index} />
-                            )
-                        })
-                    }
-                    <RestaurantCardSkeleton />
+                            list_recent_restaurants ?
+                                list_recent_restaurants.length !== 0 ?
+                                    list_recent_restaurants.map((e, index) => {
+                                        return (
+                                            <RestaurantCard key={index} id={e[0]} name={e[1]} range={e[2]} rating={e[3]} img_url={e[4]} />
+                                        )
+                                    })
+                                    :
+                                    <div className="p-2">
+                                        <p className="text-lg text-black font-semibold">you have no recent orders...</p>
+                                        <p className="text-base text-black text-opacity-75">go to a restaurant and start ordering!</p>
+                                    </div>
+                                :
+                                skeleton_amount.map((e, index) => {
+                                    return (
+                                        <RestaurantCardSkeleton key={index} />
+                                    )
+                                })
+                                :
+                                skeleton_amount.map((e, index) => {
+                                    return (
+                                        <RestaurantCardSkeleton key={index} />
+                                    )
+                                })
+                            }
                 </HorizontalScroll>
             </div>
 

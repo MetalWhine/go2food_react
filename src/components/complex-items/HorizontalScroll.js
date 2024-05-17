@@ -39,7 +39,6 @@ const HorizontalScroll = ({ children, className, scrollEndFunc=() => {} }) => {
       if (currentScrollLeft !== scrollContainerRef.current.scrollLeft)
       {
         scrollEndFunc()
-        console.log("end")
       }
     }
   };

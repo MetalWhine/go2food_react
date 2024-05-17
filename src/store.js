@@ -1,12 +1,17 @@
 import {create} from 'zustand';
 import { produce } from 'immer';
+import { TotpMultiFactorGenerator } from 'firebase/auth/web-extension';
 
 export const UseUserInfo = create((set) => ({
     user_id: "id",
+    balance: null,
     username: 'user',
+    premium: null,
 
+    UpdateBalance: (balance) => set(() => ({ balance: balance})),
     UpdateUserId: (user_id) => set(() => ({ user_id: user_id})),
-    UpdateUserName: (username) => set(() => ({ username: username}))
+    UpdateUserName: (username) => set(() => ({ username: username})),
+    UpdatePremium: (premium) => set(() => ({ premium: premium}))
 }))
 
 export const UsePositionInfo = create ((set) => ({
@@ -27,10 +32,15 @@ function CalculateTotalPrice (items) {
   return Math.round(total*100)/100;
  }
 
+ function CalculateServiceFee (total_price) {
+    return Math.round((10 * total_price / 100)*100)/100;
+ }
+
 export const UseCartOrder = create((set, get) => ({
     restaurant_id: "null",
     items: [],
     totalPrice: 0,
+    serviceFee: 0,
 
     UpdateRestaurantId: (restaurant_id) => set(() => ({ restaurant_id: restaurant_id})),
 
@@ -60,7 +70,9 @@ export const UseCartOrder = create((set, get) => ({
                 // add a new item_id with count of one
                 state.items.push([item_id, name, price, 1]);
               }
-              state.totalPrice = CalculateTotalPrice(state.items)
+              var total_price = CalculateTotalPrice(state.items)
+              state.totalPrice = total_price
+              state.serviceFee = CalculateServiceFee(total_price)
             })
           );
 
@@ -96,7 +108,9 @@ export const UseCartOrder = create((set, get) => ({
                     }
                 }
               }
-              state.totalPrice = CalculateTotalPrice(state.items)
+              var total_price = CalculateTotalPrice(state.items)
+              state.totalPrice = total_price
+              state.serviceFee = CalculateServiceFee(total_price)
             })
           );
 

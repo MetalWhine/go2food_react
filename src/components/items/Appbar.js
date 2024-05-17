@@ -51,7 +51,7 @@ function Appbar() {
 
     return (
         // main container
-        <div className="bg-white flex justify-between items-center h-16 mx-auto px-4 w-full fixed shadow-md z-[10]">
+        <div className="bg-white flex justify-between items-center h-16 mx-auto px-4 w-full fixed shadow-md z-[101]">
             <h1 className="w-full text-3xl font-bold">Go2Food</h1>
 
             {/* left most element (buttons and profile picture) main container */}

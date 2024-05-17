@@ -8,7 +8,7 @@ import { useLocation } from 'react-router-dom';
 function FoodOrder({ActiveOrderData}) {
     
     return (
-        <div className="pt-[120px]">
+        <div className="pt-[72px]">
             {
                 !ActiveOrderData ?
                     <LoadingOverlay />

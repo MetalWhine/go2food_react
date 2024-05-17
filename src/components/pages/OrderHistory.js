@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom'
 import RestaurantRoundedIcon from '@mui/icons-material/RestaurantRounded';
 
-function Messages () {
+function OrderHistory () {
     const navigate = useNavigate()
     const navigateMe = (e) => {
         e.preventDefault()
@@ -13,7 +13,7 @@ function Messages () {
         <div className='flex flex-col items-center justify-center overflow-auto bg-white h-screen w-screen space-y-10'>
             <div className='text-center space-y-2'>
                 <h3 className='text-4xl'>
-                    This page is not ready yet: <strong>Messages</strong>
+                    This page is not ready yet: <strong>Bills</strong>
                 </h3>
                 <p className='text-lg'>
                     Take me back to the home page
@@ -33,4 +33,4 @@ function Messages () {
     )
 }
 
-export default Messages;
+export default OrderHistory;

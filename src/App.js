@@ -1,13 +1,10 @@
 import {React, useState, useEffect} from "react";
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Dashboard from "./components/pages/Dashboard";
-import Messages from "./components/pages/Messages";
 import Settings from "./components/pages/Settings";
 import FoodOrder from "./components/pages/FoodOrder";
-import Favorites from "./components/pages/Favorites";
-import Bills from "./components/pages/Bills";
+import OrderHistory from "./components/pages/OrderHistory";
 import Invalid from "./components/pages/Invalid";
-import History from "./components/pages/History";
 import Login from "./components/pages/Login";
 import Restaurant from "./components/pages/Restaurants";
 import Register from "./components/pages/Register";
@@ -19,27 +16,55 @@ import axios from "axios";
 import { UseUserInfo } from "./store";
 import toast, { Toaster } from 'react-hot-toast';
 
+// function NavbarWithAuthReq ({children}) {
+//   return (
+//     <RequireAuthWithNavbar notifyInsufficientBalance={notifyInsufficientBalance}>{children}</RequireAuthWithNavbar>
+//   )
+// }
+
 function App() {
   // toast functionabilities
   const notifyOrderAlreadyOrder = () => toast.error('You already have an active order');
   const notifyOrderRejected = () => toast.error('Your order is rejected by the restaurant! \n your money has been refunded');
+  const notifyInsufficientBalance = () => toast.error("You have insufficient balance, please top up your balance before making this purchase!")
   const notifyOrderSuccess = () => toast.success('Order is placed');
   const notifyOrderAccepted = () =>  toast.success("Your order has been accepted by the restaurant!")
+  const notifyOrderDelivered = () => toast('your order has been delivered!', {
+    icon: '🛵',
+  });
 
   // global states
-  const { user_id } = UseUserInfo((state) => ({
+  const { user_id, balance, UpdateBalance } = UseUserInfo((state) => ({
     user_id: state.user_id,
-}));
+    balance: state.balance,
+    UpdateBalance: state.UpdateBalance,
+  }));
 
 // local states
-const [ActiveOrderData, SetActiveOrderData] = useState(null)
-const [previousOrderStatus, SetPreviousOrderStatus] = useState(null)
+  const [ActiveOrderData, SetActiveOrderData] = useState(null)
+  const [previousOrderStatus, SetPreviousOrderStatus] = useState(null)
 
 // functions
 
 // delete a rejected order data
 const DeleteActiveOrder = (id) => {
   axios.delete(`${BackendURL}/delete_active_order/${id}`)
+  .then((response) => {
+      if (response.data)
+      {
+        return response.data
+      }
+  })
+  .catch((error) => {
+      console.log(error, 'error');
+      return null
+  });
+}
+
+const CompleteActiveOrder = (id) => {
+  axios.post(`${BackendURL}/complete_active_order`, {
+    id: id
+  })
   .then((response) => {
       if (response.data)
       {
@@ -69,41 +94,51 @@ const GetActiveOrderData = () => {
 
         if (status === "rejected")
         {
+          if (previousOrderStatus !== null)
+          {
+            var new_balance = balance + response.data["total_price"]
+            UpdateBalance(Math.round(new_balance*100)/100)
+          }
           notifyOrderRejected()
-          SetActiveOrderData(DeleteActiveOrder(response.data["_id"]));
           SetPreviousOrderStatus(null);
+          SetActiveOrderData(DeleteActiveOrder(response.data["_id"]));
           return;
         }
 
+        if (status === "delivered")
+          {
+            notifyOrderDelivered()
+            SetPreviousOrderStatus(null);
+            // change later when the api to move the order data into a new collection is made
+            SetActiveOrderData(CompleteActiveOrder(response.data["_id"]));
+            return;
+          }
+
         SetActiveOrderData(response.data)
         SetPreviousOrderStatus(status);
-
     })
     .catch((error) => {
         console.log(error, 'error');
     });
 }
 
-// gets called after the next 3 seconds onwards to get update on the active order data
-useEffect(() => {
-    let timerId = setTimeout(GetActiveOrderData, 3000);
-    return () => clearInterval(timerId)
-})
+  // gets called after the next 3 seconds onwards to get update on the active order data
+  useEffect(() => {
+      let timerId = setTimeout(GetActiveOrderData, 3000);
+      return () => clearInterval(timerId)
+  })
 
   return (
     <BrowserRouter>
         <Toaster />
         <Routes>
           {/* with navbar*/}
-          <Route exact path='/' element={<RequireAuthWithNavbar notifyOrderAlreadyOrder={notifyOrderAlreadyOrder} notifyOrderSuccess={notifyOrderSuccess}><Dashboard /></RequireAuthWithNavbar>} />
-          <Route exact path='/restaurant/:id' element={<RequireAuthWithNavbar notifyOrderAlreadyOrder={notifyOrderAlreadyOrder} notifyOrderSuccess={notifyOrderSuccess}><Restaurant /></RequireAuthWithNavbar>} />
-          <Route exact path='/orders' element={<RequireAuthWithNavbar notifyOrderAlreadyOrder={notifyOrderAlreadyOrder} notifyOrderSuccess={notifyOrderSuccess}><FoodOrder ActiveOrderData={ActiveOrderData}/></RequireAuthWithNavbar>} />
-          <Route exact path='/messages' element={<RequireAuthWithNavbar notifyOrderAlreadyOrder={notifyOrderAlreadyOrder} notifyOrderSuccess={notifyOrderSuccess}><Messages /></RequireAuthWithNavbar>} />
-          <Route exact path='/settings' element={<RequireAuthWithNavbar notifyOrderAlreadyOrder={notifyOrderAlreadyOrder} notifyOrderSuccess={notifyOrderSuccess}><Settings /></RequireAuthWithNavbar>} />
-          <Route exact path='/Bills' element={<RequireAuthWithNavbar notifyOrderAlreadyOrder={notifyOrderAlreadyOrder} notifyOrderSuccess={notifyOrderSuccess}><Bills /></RequireAuthWithNavbar>} />
-          <Route exact path='/favorites' element={<RequireAuthWithNavbar notifyOrderAlreadyOrder={notifyOrderAlreadyOrder} notifyOrderSuccess={notifyOrderSuccess}><Favorites /></RequireAuthWithNavbar>} />
-          <Route exact path='/history' element={<RequireAuthWithNavbar notifyOrderAlreadyOrder={notifyOrderAlreadyOrder} notifyOrderSuccess={notifyOrderSuccess}><History /></RequireAuthWithNavbar>} />
-          <Route exact path='/restaurant/:id' element={<RequireAuthWithNavbar notifyOrderAlreadyOrder={notifyOrderAlreadyOrder} notifyOrderSuccess={notifyOrderSuccess}><Restaurant /></RequireAuthWithNavbar>} />
+          <Route exact path='/' element={<RequireAuthWithNavbar notifyOrderAlreadyOrder={notifyOrderAlreadyOrder} notifyOrderSuccess={notifyOrderSuccess} notifyInsufficientBalance={notifyInsufficientBalance}><Dashboard /></RequireAuthWithNavbar>} />
+          <Route exact path='/restaurant/:id' element={<RequireAuthWithNavbar notifyOrderAlreadyOrder={notifyOrderAlreadyOrder} notifyOrderSuccess={notifyOrderSuccess} notifyInsufficientBalance={notifyInsufficientBalance}><Restaurant /></RequireAuthWithNavbar>} />
+          <Route exact path='/orders' element={<RequireAuthWithNavbar notifyOrderAlreadyOrder={notifyOrderAlreadyOrder} notifyOrderSuccess={notifyOrderSuccess} notifyInsufficientBalance={notifyInsufficientBalance}><FoodOrder ActiveOrderData={ActiveOrderData}/></RequireAuthWithNavbar>} />
+          <Route exact path='/settings' element={<RequireAuthWithNavbar notifyOrderAlreadyOrder={notifyOrderAlreadyOrder} notifyOrderSuccess={notifyOrderSuccess} notifyInsufficientBalance={notifyInsufficientBalance}><Settings /></RequireAuthWithNavbar>} />
+          <Route exact path='/order-history' element={<RequireAuthWithNavbar notifyOrderAlreadyOrder={notifyOrderAlreadyOrder} notifyOrderSuccess={notifyOrderSuccess} notifyInsufficientBalance={notifyInsufficientBalance}><OrderHistory /></RequireAuthWithNavbar>} />
+          <Route exact path='/restaurant/:id' element={<RequireAuthWithNavbar notifyOrderAlreadyOrder={notifyOrderAlreadyOrder} notifyOrderSuccess={notifyOrderSuccess} notifyInsufficientBalance={notifyInsufficientBalance}><Restaurant /></RequireAuthWithNavbar>} />
 
           {/* without navbar */}
           <Route exact path='login' element={<Login />} />
