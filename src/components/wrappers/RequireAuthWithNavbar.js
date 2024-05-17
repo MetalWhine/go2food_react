@@ -7,10 +7,12 @@ import { BackendURL } from '../configs/GlobalVar';
 import LoadingOverlay from '../items/LoadingOverlay';
 import { UseUserInfo } from '../../store';
 
-function RequireAuthWithNavbar({ notifyOrderAlreadyOrder = () => {}, notifyOrderSuccess = () => {} , children }) {
-  const {UpdateUserId, UpdateUserName} = UseUserInfo((state) => ({
+function RequireAuthWithNavbar({ notifyOrderAlreadyOrder = () => {}, notifyOrderSuccess = () => {}, notifyInsufficientBalance = () => {} , children }) {
+  const {UpdateUserId, UpdateUserName, UpdatePremium, UpdateBalance} = UseUserInfo((state) => ({
     UpdateUserId: state.UpdateUserId,
-    UpdateUserName: state.UpdateUserName
+    UpdateUserName: state.UpdateUserName,
+    UpdatePremium: state.UpdatePremium,
+    UpdateBalance: state.UpdateBalance
   }));
   const [initialCheckValue, setInitialCheckValue] = useState(true);
   const [actualCheckValue, setActualCheckValue] = useState(false);
@@ -69,6 +71,8 @@ function RequireAuthWithNavbar({ notifyOrderAlreadyOrder = () => {}, notifyOrder
         })
         .then((res) => {
           UpdateUserName(res.data[0]['username']);
+          UpdatePremium(res.data[0]['premium']);
+          UpdateBalance(res.data[0]["balance"])
         })
         .catch((err) => {
           console.log(err, 'error')
@@ -95,7 +99,7 @@ function RequireAuthWithNavbar({ notifyOrderAlreadyOrder = () => {}, notifyOrder
   {
     return (
       <div>
-        <Navbar notifyOrderAlreadyOrder={notifyOrderAlreadyOrder} notifyOrderSuccess={notifyOrderSuccess} />
+        <Navbar notifyOrderAlreadyOrder={notifyOrderAlreadyOrder} notifyOrderSuccess={notifyOrderSuccess} notifyInsufficientBalance={notifyInsufficientBalance} />
         {children}
       </div>
     )

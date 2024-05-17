@@ -6,17 +6,21 @@ import { BackendURL } from "../configs/GlobalVar";
 import { wait } from "../utils/Functionabilities";
 import { UseCartOrder, UseUserInfo, UsePositionInfo } from "../../store";
 
-function OrderBar ({notifyOrderAlreadyOrder = () => {}, notifyOrderSuccess = () => {}}) {
+function OrderBar ({notifyOrderAlreadyOrder = () => {}, notifyOrderSuccess = () => {}, notifyInsufficientBalance = () => {}}) {
     // global states
-    const {user_id, username} = UseUserInfo((state) => ({
+    const {user_id, username, balance, premium, UpdateBalance} = UseUserInfo((state) => ({
         user_id: state.user_id,
         username: state.username,
+        balance: state.balance,
+        premium: state.premium,
+        UpdateBalance: state.UpdateBalance,
       }));
 
-    const {restaurant_id, items, totalPrice, RemoveCartItems} = UseCartOrder((state) => ({
+    const {restaurant_id, items, totalPrice,serviceFee, RemoveCartItems} = UseCartOrder((state) => ({
         restaurant_id: state.restaurant_id,
         items: state.items,
         totalPrice: state.totalPrice,
+        serviceFee: state.serviceFee,
         RemoveCartItems: state.RemoveCartItems
     }));
 
@@ -28,7 +32,6 @@ function OrderBar ({notifyOrderAlreadyOrder = () => {}, notifyOrderSuccess = () 
       }));
 
     // local states
-    const [locUpdated, SetLocUpdated] = useState(false);
     const [Loading, SetLoading] = useState(false);
     const [OrderBarShown, SetOrderBarShown] = useState(false);
     const [OrderConfirmationShown, SetOrderConfirmationShown] = useState(false);
@@ -49,6 +52,13 @@ function OrderBar ({notifyOrderAlreadyOrder = () => {}, notifyOrderSuccess = () 
 
     const OrderConfirmationOkClicked = async () => {
         SetLoading(true);
+        var delivery_fee = 4.99;
+        var service_fee = serviceFee;
+        if (premium)
+        {
+            delivery_fee = 0;
+            service_fee = 0;
+        }
         let order_dict = []
         for (let i = 0; i < items.length; i++)
         {
@@ -64,7 +74,7 @@ function OrderBar ({notifyOrderAlreadyOrder = () => {}, notifyOrderSuccess = () 
             user_id: user_id,
             username: username,
             restaurant_id: restaurant_id,
-            total_price: totalPrice,
+            total_price: (totalPrice + delivery_fee + service_fee),
             latitude: latitude,
             longitude: longitude,
             order: order_dict
@@ -77,12 +87,22 @@ function OrderBar ({notifyOrderAlreadyOrder = () => {}, notifyOrderSuccess = () 
                     SetOrderBarShown(false)
                     notifyOrderAlreadyOrder()
                 }
+                else if (response.data["detail"] === "balance is insufficient")
+                {
+                    await wait(300)
+                    SetLoading(false);
+                    SetOrderConfirmationShown(false)
+                    SetOrderBarShown(false)
+                    notifyInsufficientBalance()
+                }
                 else if (response.data["detail"] === "active order added succesfully") {
                     await wait(300);
                     RemoveCartItems();
                     SetLoading(false);
                     SetOrderConfirmationShown(false)
                     SetOrderBarShown(false)
+                    var new_balance = balance - (totalPrice + delivery_fee + service_fee)
+                    UpdateBalance(Math.round(new_balance*100)/100)
                     notifyOrderSuccess()
                 }
             })
@@ -156,7 +176,6 @@ function OrderBar ({notifyOrderAlreadyOrder = () => {}, notifyOrderSuccess = () 
         navigator.geolocation.getCurrentPosition((pos) => {
             UpdateLongitude(pos.coords.longitude);
             UpdateLatitude(pos.coords.latitude);
-            SetLocUpdated(true)
         })
     }, [])
     
@@ -180,7 +199,7 @@ function OrderBar ({notifyOrderAlreadyOrder = () => {}, notifyOrderSuccess = () 
         // main container
         <div className="z-[100]">
             {Loading ? <LoadingOverlay /> : <div/>}
-            <div onClick={OrderBarButtonClicked} id="OrderBarOverlay" className="hidden fixed w-full h-[100vh] bg-black bg-opacity-35"></div>
+            <div onClick={OrderBarButtonClicked} id="OrderBarOverlay" className="hidden fixed w-full h-[100vh] bg-black bg-opacity-35 z-[100]"></div>
             <div onClick={() => {SetOrderConfirmationShown(false)}} id="OrderConfirmationOverlay" className="hidden fixed w-full h-[100vh] bg-black bg-opacity-35 z-[100]"></div>
 
             {/* button to toggle balance bar while in small devices*/}
@@ -215,11 +234,27 @@ function OrderBar ({notifyOrderAlreadyOrder = () => {}, notifyOrderSuccess = () 
                                 )
                             })
                         }
+                        {/* delivery fee information*/}
+                        <div className="flex flex-row justify-between">
+                            <p className="text-base">delivery</p>
+                            <div className="flex flex-row items-center">
+                                <p className="text-md text-opacity-80">: {premium ? "0$ (premium benefit)": "4.99$"} </p>
+                            </div>
+                        </div>
+
+                        {/* service fee information*/}
+                        <div className="flex flex-row justify-between">
+                            <p className="text-base">service</p>
+                            <div className="flex flex-row items-center">
+                                <p className="text-md text-opacity-80">: {premium ? "0$ (premium benefit)": `${serviceFee}$`} </p>
+                            </div>
+                        </div>
+
                         <div className="flex flex-row justify-between items-center pt-4 space-x-2">
                             <hr className="h-0 border-b border-solid border-grey-500 grow" />
                             <div className="flex flex-row space-x-2">
                                 <p className="font-bold">total:</p>
-                                <p>{totalPrice}$</p>
+                                <p>{premium ? totalPrice : Math.floor((totalPrice + serviceFee + 4.99)*100)/100}$</p>
                             </div>
                         </div>
                         <div className="pt-6 w-full">

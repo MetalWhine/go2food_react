@@ -52,10 +52,7 @@ function NavSideBar() {
 
     const list_buttons = [[RestaurantOutlinedIcon, "Dashboard", "/", location.pathname], 
                          [DeliveryDiningOutlinedIcon, "Food Order", "/orders", location.pathname],
-                         [TryOutlinedIcon, "Favorite", "/favorites", location.pathname],
-                         [ChatOutlinedIcon, "Message", "/messages", location.pathname],
-                         [HistoryOutlinedIcon, "Order History", "/history", location.pathname],
-                         [ReceiptLongOutlinedIcon, "Bills", "/bills", location.pathname],
+                         [ReceiptLongOutlinedIcon, "order history", "/order-history", location.pathname],
                          [SettingsOutlinedIcon, "Settings", "/settings", location.pathname]]
 
     useEffect(() => {
@@ -116,7 +113,7 @@ function NavSideBar() {
     return (
         
         <div className="">
-            <div onClick={navSideBarBurgerButtonCliked} id="navSideBarOverlay" className="hidden fixed w-full h-[100vh] bg-black bg-opacity-35"></div>
+            <div onClick={navSideBarBurgerButtonCliked} id="navSideBarOverlay" className="hidden fixed w-full h-[100vh] bg-black bg-opacity-35 z-[100]"></div>
             <div id="navSideBarBurgerButton" onClick={navSideBarBurgerButtonCliked} className="bg-slate-50 ml-2 p-2 fixed mt-[72px] block min-[1650px]:hidden rounded-[12px] hover:bg-gray-300 active:bg-gray-400 shadow-xl">
                 <MenuOutlinedIcon />
             </div>

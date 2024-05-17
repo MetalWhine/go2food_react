@@ -2,11 +2,23 @@ import {React, useState, useEffect} from "react";
 import VerticalAlignTopOutlinedIcon from '@mui/icons-material/VerticalAlignTopOutlined';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import AccountBalanceWalletRoundedIcon from '@mui/icons-material/AccountBalanceWalletRounded';
+import { BackendURL } from "../configs/GlobalVar";
+import { useLocation } from "react-router-dom";
+import axios from "axios";
+import { UseUserInfo } from "../../store";
 
 function BalanceBanner () {
+    // global states
+    const { balance } = UseUserInfo((state) => ({
+        balance: state.balance
+    }));
+
     const [BalanceBarShown, SetBalanceBarShown] = useState(false);
     const BalanceBar = document.getElementById('BalanceBar');
     const BalanceBarOverlay = document.getElementById('BalanceBarOverlay');
+
+
+
     const [matches, setMatches] = useState(
         window.matchMedia("(min-width: 1840px)").matches
       )
@@ -68,47 +80,50 @@ function BalanceBanner () {
         // main container
         <div className="z-[100]">
 
-            <div onClick={balanceBarToggleClicked} id="BalanceBarOverlay" className="hidden fixed w-full h-[100vh] bg-black bg-opacity-35"></div>
+            <div onClick={balanceBarToggleClicked} id="BalanceBarOverlay" className="hidden fixed w-full h-[100vh] bg-black bg-opacity-35 z-[100]"></div>
             {/* button to toggle balance bar while in small devices*/}
             <div onClick={balanceBarToggleClicked} className="bg-green-700 right-[8px] text-white p-2 fixed mt-[72px] block min-[1840px]:hidden rounded-[12px] hover:bg-green-800 active:bg-green-900 shadow-xl">
                 <AccountBalanceWalletRoundedIcon />
             </div>
 
-            {/* visibe only on big screen*/}
-            <div id="BalanceBar" className="bg-green-700 hidden min-[1840px]:block p-1 right-[16px] fixed mt-[72px] rounded-[12px] shadow-xl animate-nav-bars-menu-popup z-[100]">
-                <div className="flex">
+            {/* balance banner container */}
+            <div id="BalanceBar" className=" bg-green-700 hidden min-[1840px]:block p-1 right-[16px] fixed mt-[72px] rounded-[12px] shadow-xl animate-nav-bars-menu-popup z-[100]">
+                <div className="flex flex-row">
 
                     {/* balance */}
-                    <div className="flex flex-col bg-white pl-[18px] pr-[36px] py-2 mx-4 my-4 rounded-md">
+                    <div className=" min-w-[125px] w-[150px] flex flex-col bg-white pl-[18px] pr-[36px] py-2 mx-4 my-4 rounded-md">
                         <div className="text-[17px]/[20px]">
                             <p> Balance </p>
                         </div>
-                        <div className="text-xl font-bold">
-                            <p> 50 $ </p>
+                        <div className="sm:text-xl font-bold text-lg">
+                            <p> {balance} $ </p>
                         </div>
                     </div>
 
-                    {/* buttonn */}
-                    <div className="flex flex-col">
-                        <div className="flex flex-[1] items-center justify-center">
-                            <div className="bg-white rounded-[8px] hover:bg-gray-300 active:bg-gray-400 p-1">
-                                <VerticalAlignTopOutlinedIcon /> 
+                    {/* buttons */}
+                    <div className="flex flex-row">
+                        {/* buttonn */}
+                        <div className="flex flex-col">
+                            <div className="flex flex-row flex-[1] items-center justify-center">
+                                <div className="bg-white rounded-[8px] hover:bg-gray-300 active:bg-gray-400 p-1">
+                                    <VerticalAlignTopOutlinedIcon /> 
+                                </div>
+                            </div>
+                            <div className="flex flex-row flex-[1] items-center justify-center"> 
+                                <div className="bg-white rounded-[8px] hover:bg-gray-300 active:bg-gray-400 p-1">
+                                    <FileDownloadOutlinedIcon /> 
+                                </div>
                             </div>
                         </div>
-                        <div className="flex flex-[1] items-center justify-center"> 
-                            <div className="bg-white rounded-[8px] hover:bg-gray-300 active:bg-gray-400 p-1">
-                                <FileDownloadOutlinedIcon /> 
-                            </div>
-                        </div>
-                    </div>
 
-                    {/* button information */}
-                    <div className="flex flex-col px-2 text-white">
-                        <div className="flex flex-[1] items-center">
-                            <p>Top-up</p>
-                        </div>
-                        <div className="flex flex-[1] items-center">
-                            <p>Transfer</p>
+                        {/* button information */}
+                        <div className="flex flex-col px-2 text-white">
+                            <div className="flex flex-[1] items-center">
+                                <p>Top-up</p>
+                            </div>
+                            <div className="flex flex-[1] items-center">
+                                <p>Transfer</p>
+                            </div>
                         </div>
                     </div>
 
