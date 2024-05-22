@@ -2,7 +2,7 @@ import React from "react";
 
 function RestaurantCardSkeleton () {
     return (
-        <div className="flex flex-col justify-center bg-green-600 text-white p-2 mr-4 rounded-md md:min-w-[200px] md:min-h-[200px] min-w-[150px] min-h-[150px]">
+        <div className="flex flex-col justify-center bg-green-600 text-white p-2 mr-4 rounded-md md:min-w-[200px] md:min-h-[200px] sm:min-h-[175px] sm:min-w-[175px] sm:h-[175px] sm:w-[175px] min-w-[150px] min-h-[150px] md:w-[200px] md:h-[200px] w-[150px] h-[150px]">
             <div className="animate-pulse space-y-2">
                 <div className="w-full md:h-28 sm:h-24 h-20 rounded-lg bg-green-500"/>
                 <div className="h-2 bg-green-500 rounded w-5"/>

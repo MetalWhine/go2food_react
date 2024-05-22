@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 function RestaurantCard ({id, name, range, rating, img_url}) {
     const navigate = useNavigate()
     return (
-        <div onClick={() => {navigate(`/restaurant/${id}`)}} className='flex justify-center items-center bg-green-600 text-white p-2 mr-4 rounded-md hover:bg-green-700 active:bg-green-800 md:min-w-[200px] md:min-h-[200px] min-w-[150px] min-h-[150px]'>
+        <div onClick={() => {navigate(`/restaurant/${id}`)}} className='flex justify-center items-center bg-green-600 text-white p-2 rounded-md hover:bg-green-700 active:bg-green-800 md:min-w-[200px] md:min-h-[200px] sm:min-h-[175px] sm:min-w-[175px] sm:h-[175px] sm:w-[175px] min-w-[150px] min-h-[150px] md:w-[200px] md:h-[200px] w-[150px] h-[150px]'>
             <div className="w-full items-center justify-center m-auto">
                 <img className=" w-full md:h-28 sm:h-24 h-20 rounded-lg mx-auto pointer-events-none" style={{objectFit:"cover"}} src={img_url} alt="Restaurant Thumbnail"></img>
 

@@ -25,9 +25,9 @@ function Banner() {
             <p className="py-4 px-2 text-white font-bold text-[18px]/[26px]">
                 Upgrade your account to Get Free Voucher
             </p>
-            <button className="py-2 px-4 flex items-start w-fit mt-4 bg-white rounded-md hover:bg-gray-300 active:bg-gray-600 active:text-white drop-shadow-md">
+            {/* <button className="py-2 px-4 flex items-start w-fit mt-4 bg-white rounded-md hover:bg-gray-300 active:bg-gray-600 active:text-white drop-shadow-md">
                 Upgrade
-            </button>
+            </button> */}
         </div>
     )
 }

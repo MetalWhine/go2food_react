@@ -1,6 +1,5 @@
 import {create} from 'zustand';
 import { produce } from 'immer';
-import { TotpMultiFactorGenerator } from 'firebase/auth/web-extension';
 
 export const UseUserInfo = create((set) => ({
     user_id: "id",
