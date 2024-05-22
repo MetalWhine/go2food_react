@@ -6,28 +6,24 @@ import CategoryCard from '../items/CategoryCard';
 import RestaurantCard from '../items/RestaurantCard';
 import RestaurantCardSkeleton from '../items/RestaurantCardSkeleton';
 import LoadingOverlay from '../items/LoadingOverlay';
+import SearchIcon from '@mui/icons-material/Search';
 import { wait } from '../utils/Functionabilities';
 import { useLocation } from 'react-router-dom';
 import { BackendURL } from '../configs/GlobalVar';
 import { UseUserInfo, UsePositionInfo } from '../../store';
+import { Pagination, Box } from '@mui/material';
 import { Skeleton } from '@mui/material';
 
 const list_categories = [
-                         ["burgers"], 
-                         ["chickens"],
-                         ["asians"],
-                         ["seafood"],
-                         ["pizzas"],
-                         ["beverages"],
+                         "burgers", 
+                         "chickens",
+                         "asians",
+                         "seafood",
+                         "pizzas",
+                         "beverages",
                         ]
 
-const skeleton_amount = [ 1,
-                          2,
-                          3,
-                          4,
-                          5,
-                          6
-                        ]
+const skeleton_amount = [ 1, 2, 3, 4, 5, 6, 7, 8 ]
 
 function Dashboard ({notifyInsufficientBalance = () => {}}) {
     // global states
@@ -48,15 +44,35 @@ function Dashboard ({notifyInsufficientBalance = () => {}}) {
       }));
 
     // local states
-    let location = useLocation()
+    let location = useLocation();
+    const [totalPages, SetTotalPages] = useState(3);
+    const [currentPage, SetCurrentPage] = useState(1);
+    const [searchInput, SetSearchInput] = useState("");
+    const [searchTerm, SetSearchTerm] = useState("");
+    const [TagSearchTerms, SetTagSearchTerms] = useState([]);
+    const [FetchingData, SetFetchingData] = useState(false);
     const [Loading, SetLoading] = useState(false);
     const [locUpdated, SetLocUpdated] = useState(false);
     const [recommendedLoading, SetRecommendedLoading] = useState(false);
-    const [recentRestaurantLoading, SetRecentRestaurantLoading] = useState(false);
-    const [list_restaurants, SetListRestaurants] = useState([])
-    const [list_recent_restaurants, SetListRecentRestaurants] = useState(null)
+    const [list_restaurants, SetListRestaurants] = useState([]);
+    const [list_restaurants_queried, SetListRestaurantsQueried] = useState([]);
+    const [list_recent_restaurants, SetListRecentRestaurants] = useState(null);
+
+    // hardcoded component
+    const itemperpage = 12;
 
     // functions
+    const inputEnter = (event) => {
+        if (event.key === "Enter")
+        {
+            SetSearchTerm(searchInput);
+        }
+    }
+    const handlePaginationChange = (event, value) =>
+    { 
+        SetCurrentPage(value); 
+    };
+
     const recommendedAtEnd = () => {
         SetRecommendedLoading(true)
     }
@@ -69,28 +85,74 @@ function Dashboard ({notifyInsufficientBalance = () => {}}) {
         })
     }, [location])
 
+    // update the restaurant list based on query by user
+    useEffect(() => {
+        console.log(TagSearchTerms)
+        console.log(searchTerm)
+        
+        
+        SetFetchingData(true);
+        axios.post(`${BackendURL}/get_restaurants_based_on_query/`, {
+            latitude: latitude,
+            longitude: longitude,
+            search_name: searchTerm,
+            tags: TagSearchTerms,
+            currentpage: currentPage,
+            itemperpage: itemperpage
+            })
+            .then(async (response) => {
+                let res = []
+                for (let index = 0; index < response.data["datas"].length; index++)
+                {
+                const arr = [ response.data["datas"][index]["_id"],
+                                response.data["datas"][index]['name'],
+                                response.data["datas"][index]['distance'],
+                                response.data["datas"][index]['rating'],
+                                response.data["datas"][index]['pictureURL']
+                            ]
+                res.push(arr)
+                }
+                await wait(250)
+                SetTotalPages(response.data["max_page"])
+                SetListRestaurantsQueried(res)
+                SetFetchingData(false);
+            })
+            .catch((error) => {
+                console.log(error, 'error');
+                SetFetchingData(false);
+            });
+    
+
+    }, [TagSearchTerms, searchTerm])
+
     // update the list of restaurants on intial page load
     useEffect(() => {
         if (locUpdated)
         {
-            axios.post(`${BackendURL}/get_recommended_restaurants/`, {
+            SetFetchingData(true);
+            axios.post(`${BackendURL}/get_recommended_restaurants_sorted/`, {
                 latitude: latitude,
                 longitude: longitude
               })
                 .then((response) => {
+                  let res = []
                   for (let index = 0; index < response.data.length; index++)
                   {
-                    const arr = [[response.data[index]["_id"],
+                    const arr = [ response.data[index]["_id"],
                                   response.data[index]['name'],
                                   response.data[index]['distance'],
                                   response.data[index]['rating'],
                                   response.data[index]['pictureURL']
-                                ]]
-                    SetListRestaurants(list_restaurants => [...list_restaurants, ...arr])
+                                ]
+                    res.push(arr)
                   }
+                  console.log(res)
+                  SetListRestaurants(res);
+                  SetFetchingData(false);
                 })
                 .catch((error) => {
                   console.log(error, 'error');
+                  SetFetchingData(false);
                 });
         }
     }, [locUpdated])
@@ -99,7 +161,8 @@ function Dashboard ({notifyInsufficientBalance = () => {}}) {
     useEffect(() => {
         if (recommendedLoading)
         {
-            axios.post(`${BackendURL}/get_recommended_restaurants/`, {
+            SetFetchingData(true);
+            axios.post(`${BackendURL}/get_recommended_restaurants_sorted/`, {
                 latitude: latitude,
                 longitude: longitude
               })
@@ -118,6 +181,7 @@ function Dashboard ({notifyInsufficientBalance = () => {}}) {
                 })
                 .catch((error) => {
                   console.log(error, 'error');
+                  SetFetchingData(false);
                 });
         }
     }, [recommendedLoading])
@@ -126,6 +190,7 @@ function Dashboard ({notifyInsufficientBalance = () => {}}) {
     useEffect(() => {
         if (locUpdated)
         {
+            SetFetchingData(true);
             axios.post(`${BackendURL}/get_recent_restaurants/`, {
                 id: user_id,
                 latitude: latitude,
@@ -145,9 +210,11 @@ function Dashboard ({notifyInsufficientBalance = () => {}}) {
                     restaurants.push(arr)
                   }
                   SetListRecentRestaurants(restaurants)
+                  SetFetchingData(false);
                 })
                 .catch((error) => {
                   console.log(error, 'error');
+                  SetFetchingData(false);
                 });
         }
     }, [locUpdated])
@@ -189,7 +256,10 @@ function Dashboard ({notifyInsufficientBalance = () => {}}) {
                     <p className="text-center text-lg sm:text-xl md:text-2xl font-bold">Welcome, {username}!</p>
                 </div>
                 <div className='py-2 md:px-2 md:py-2 flex min-[810px]:flex-[2] min-[1560px]:flex-[3] min-[1300px]:flex-[4] items-center justify-center'> 
-                    <input type="text" id="food_search" className="py-2 px-2 bg-white border w-full border-black text-md sm:text-xl md:text-2xl text-gray-900 rounded-[24px]" placeholder="🔍 search for food"/>
+                    <div className="relative w-full">
+                        <input type="text" id="food_search" onKeyUp={inputEnter} onChange={(e) => {SetSearchInput(e.target.value)}} className="pl-9 py-2 bg-white border w-full border-black text-md sm:text-xl md:text-2xl text-gray-900 rounded-[24px]" placeholder="search for food"/>
+                        <SearchIcon className={`absolute left-2 -translate-y-[50%] top-[50%] text-black`} />
+                    </div>
                 </div>
             </div>
             
@@ -221,75 +291,122 @@ function Dashboard ({notifyInsufficientBalance = () => {}}) {
                     {
                         list_categories.map((e, index) => {
                             return (
-                                <CategoryCard key={index} name={e[0]} />
+                                <CategoryCard key={index} name={e} selectedTags={TagSearchTerms} SetSelectedTags={SetTagSearchTerms} />
                             )
                         })
                     }
                 </HorizontalScroll>
             </div>
             
-            {/*Recommended Foods container*/}
-            <div className="mx-[12.5%] sm:mx-[15%] py-2 m-2">
-                <h1 className="font-bold text-lg sm:text-xl md:text-2xl">Recommended Foods</h1>
-                <HorizontalScroll className={"no-scrollbar select-none my-4 rounded-lg"} scrollEndFunc={recommendedAtEnd}>
-                    {
-                        locUpdated ? 
-                            list_restaurants.length !== 0 ?
-                            list_restaurants.map((e, index) => {
-                                return (
-                                    <RestaurantCard key={index} id={e[0]} name={e[1]} range={e[2]} rating={e[3]} img_url={e[4]} />
-                                )
-                            }) 
-                            :
-                            skeleton_amount.map((e, index) => {
-                                return (
-                                    <RestaurantCardSkeleton key={index} />
-                                )
-                            })
-                        :
-                        skeleton_amount.map((e, index) => {
-                            return (
-                                <RestaurantCardSkeleton key={index} />
-                            )
-                        })
-                    }
-                    <RestaurantCardSkeleton />
-                </HorizontalScroll>
-            </div>
-
-            {/*Recent Orders*/}
-            <div className="mx-[12.5%] sm:mx-[15%] py-2 m-2">
-                <h1 className="font-bold text-lg sm:text-xl md:text-2xl">Recent Orders</h1>
-                <HorizontalScroll className={"no-scrollbar select-none my-4 rounded-lg"}>
-                    {
-                        locUpdated ? 
-                            list_recent_restaurants ?
-                                list_recent_restaurants.length !== 0 ?
-                                    list_recent_restaurants.map((e, index) => {
+            {
+                searchTerm === "" && TagSearchTerms.length === 0 ?
+                    <div>
+                        {/*Recommended Foods container*/}
+                        <div className="mx-[12.5%] sm:mx-[15%] py-2 m-2">
+                            <h1 className="font-bold text-lg sm:text-xl md:text-2xl">Recommended Foods</h1>
+                            <HorizontalScroll className={"no-scrollbar select-none my-4 rounded-lg space-x-4"} scrollEndFunc={recommendedAtEnd}>
+                                {
+                                    locUpdated ? 
+                                        list_restaurants.length !== 0 ?
+                                        list_restaurants.map((e, index) => {
+                                            return (
+                                                <RestaurantCard key={index} id={e[0]} name={e[1]} range={e[2]} rating={e[3]} img_url={e[4]} />
+                                            )
+                                        }) 
+                                        :
+                                        skeleton_amount.map((e, index) => {
+                                            return (
+                                                <RestaurantCardSkeleton key={index} />
+                                            )
+                                        })
+                                    :
+                                    skeleton_amount.map((e, index) => {
                                         return (
-                                            <RestaurantCard key={index} id={e[0]} name={e[1]} range={e[2]} rating={e[3]} img_url={e[4]} />
+                                            <RestaurantCardSkeleton key={index} />
                                         )
                                     })
+                                }
+                                <RestaurantCardSkeleton />
+                            </HorizontalScroll>
+                        </div>
+
+                        {/*Recent Orders*/}
+                        <div className="mx-[12.5%] sm:mx-[15%] py-2 m-2">
+                            <h1 className="font-bold text-lg sm:text-xl md:text-2xl">Recent Orders</h1>
+                            <HorizontalScroll className={"no-scrollbar select-none my-4 space-x-4 rounded-lg"}>
+                                {
+                                    locUpdated ? 
+                                        list_recent_restaurants ?
+                                            list_recent_restaurants.length !== 0 ?
+                                                list_recent_restaurants.map((e, index) => {
+                                                    return (
+                                                        <RestaurantCard key={index} id={e[0]} name={e[1]} range={e[2]} rating={e[3]} img_url={e[4]} />
+                                                    )
+                                                })
+                                                :
+                                                <div className="p-2">
+                                                    <p className="text-lg text-black font-semibold">you have no recent orders...</p>
+                                                    <p className="text-base text-black text-opacity-75">go to a restaurant and start ordering!</p>
+                                                </div>
+                                            :
+                                            skeleton_amount.map((e, index) => {
+                                                return (
+                                                    <RestaurantCardSkeleton key={index} />
+                                                )
+                                            })
+                                            :
+                                            skeleton_amount.map((e, index) => {
+                                                return (
+                                                    <RestaurantCardSkeleton key={index} />
+                                                )
+                                            })
+                                        }
+                            </HorizontalScroll>
+                        </div>
+                    </div>
+                    :
+                    <div className="flex flex-col justify-center mx-[12.5%] sm:mx-[15%]">
+                        <div className="grid grid-cols-2 min-[900px]:grid-cols-3 min-[1400px]:grid-cols-4 gap-y-4 justify-between w-full">
+                            {
+                                !FetchingData ? 
+                                        list_restaurants_queried.length !== 0 ?
+                                        list_restaurants_queried.map((e, index) => {
+                                            return (
+                                                <RestaurantCard key={index} id={e[0]} name={e[1]} range={e[2]} rating={e[3]} img_url={e[4]} />
+                                            )
+                                        }) 
+                                        :
+                                        <p>no results found</p>
                                     :
-                                    <div className="p-2">
-                                        <p className="text-lg text-black font-semibold">you have no recent orders...</p>
-                                        <p className="text-base text-black text-opacity-75">go to a restaurant and start ordering!</p>
-                                    </div>
-                                :
-                                skeleton_amount.map((e, index) => {
-                                    return (
-                                        <RestaurantCardSkeleton key={index} />
-                                    )
-                                })
-                                :
-                                skeleton_amount.map((e, index) => {
-                                    return (
-                                        <RestaurantCardSkeleton key={index} />
-                                    )
-                                })
+                                    skeleton_amount.map((e, index) => {
+                                        return (
+                                            <RestaurantCardSkeleton key={index} />
+                                        )
+                                    })
                             }
-                </HorizontalScroll>
-            </div>
+                        </div>
+                        <Box justifyContent={"center"} alignItems="center" display={"flex"} sx={{ marginTop:"25px", marginBottom:"15px",}}>
+                            <Pagination
+                                count={totalPages}
+                                color='primary'
+                                page={currentPage}
+                                onChange={handlePaginationChange}
+                                shape="rounded"
+                                sx={{
+                                    '& .MuiPaginationItem-root': { // Base styles (optional)
+                                        color: '#00000',
+                                        '&.Mui-selected': {
+                                            backgroundColor: '#16A34A',
+                                        },
+                                        '&.Mui-selected:hover': {
+                                            backgroundColor: '#15803D',
+                                        },
+                                    },
+                                }}
+                            />
+                        </Box>
+                    </div>
+            }
 
         </div>
     )
