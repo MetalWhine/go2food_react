@@ -15,6 +15,7 @@ import { BackendURL } from "./components/configs/GlobalVar";
 import axios from "axios";
 import { UseUserInfo } from "./store";
 import toast, { Toaster } from 'react-hot-toast';
+import Location from "./components/pages/Location";
 
 // function NavbarWithAuthReq ({children}) {
 //   return (
@@ -139,6 +140,7 @@ const GetActiveOrderData = () => {
           <Route exact path='/settings' element={<RequireAuthWithNavbar notifyOrderAlreadyOrder={notifyOrderAlreadyOrder} notifyOrderSuccess={notifyOrderSuccess} notifyInsufficientBalance={notifyInsufficientBalance}><Settings /></RequireAuthWithNavbar>} />
           <Route exact path='/order-history' element={<RequireAuthWithNavbar notifyOrderAlreadyOrder={notifyOrderAlreadyOrder} notifyOrderSuccess={notifyOrderSuccess} notifyInsufficientBalance={notifyInsufficientBalance}><OrderHistory /></RequireAuthWithNavbar>} />
           <Route exact path='/restaurant/:id' element={<RequireAuthWithNavbar notifyOrderAlreadyOrder={notifyOrderAlreadyOrder} notifyOrderSuccess={notifyOrderSuccess} notifyInsufficientBalance={notifyInsufficientBalance}><Restaurant /></RequireAuthWithNavbar>} />
+          <Route exact path='/location' element={<Location />} /> {/* TODO: Ganti biar harus ada auth dll */}
 
           {/* without navbar */}
           <Route exact path='login' element={<Login />} />
