@@ -4,15 +4,18 @@ import LoadingOverlay from "./LoadingOverlay";
 import axios from "axios";
 import { BackendURL } from "../configs/GlobalVar";
 import { wait } from "../utils/Functionabilities";
-import { UseCartOrder, UseUserInfo, UsePositionInfo } from "../../store";
+import { UseCartOrder, UseUserInfo } from "../../store";
 
 function OrderBar ({notifyOrderAlreadyOrder = () => {}, notifyOrderSuccess = () => {}, notifyInsufficientBalance = () => {}}) {
     // global states
-    const {user_id, username, balance, premium, UpdateBalance} = UseUserInfo((state) => ({
+    const {user_id, username, location, latitude, longitude, balance, premium, UpdateBalance} = UseUserInfo((state) => ({
         user_id: state.user_id,
         username: state.username,
         balance: state.balance,
         premium: state.premium,
+        location: state.location,
+        latitude: state.latitude,
+        longitude: state.longitude,
         UpdateBalance: state.UpdateBalance,
       }));
 
@@ -23,13 +26,6 @@ function OrderBar ({notifyOrderAlreadyOrder = () => {}, notifyOrderSuccess = () 
         serviceFee: state.serviceFee,
         RemoveCartItems: state.RemoveCartItems
     }));
-
-    const {latitude, longitude, UpdateLatitude, UpdateLongitude} = UsePositionInfo((state) => ({
-        latitude: state.latitude,
-        longitude: state.longitude,
-        UpdateLatitude: state.UpdateLatitude,
-        UpdateLongitude: state.UpdateLongitude
-      }));
 
     // local states
     const [Loading, SetLoading] = useState(false);
@@ -75,6 +71,7 @@ function OrderBar ({notifyOrderAlreadyOrder = () => {}, notifyOrderSuccess = () 
             username: username,
             restaurant_id: restaurant_id,
             total_price: (totalPrice + delivery_fee + service_fee),
+            location: location,
             latitude: latitude,
             longitude: longitude,
             order: order_dict
@@ -172,12 +169,6 @@ function OrderBar ({notifyOrderAlreadyOrder = () => {}, notifyOrderSuccess = () 
     }, [OrderConfirmationShown]);
 
     // functions
-    useEffect(() => {
-        navigator.geolocation.getCurrentPosition((pos) => {
-            UpdateLongitude(pos.coords.longitude);
-            UpdateLatitude(pos.coords.latitude);
-        })
-    }, [])
     
     // check if the screen changed from small screen to big screen
     useEffect(() => {

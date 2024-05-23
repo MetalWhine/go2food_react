@@ -3,9 +3,7 @@ import {useState, useEffect} from "react";
 import { Link, useLocation} from "react-router-dom";
 import RestaurantOutlinedIcon from '@mui/icons-material/RestaurantOutlined';
 import DeliveryDiningOutlinedIcon from '@mui/icons-material/DeliveryDiningOutlined';
-import TryOutlinedIcon from '@mui/icons-material/TryOutlined';
-import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined';
-import HistoryOutlinedIcon from '@mui/icons-material/HistoryOutlined';
+import { UseUserInfo } from "../../store";
 import ReceiptLongOutlinedIcon from '@mui/icons-material/ReceiptLongOutlined';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
@@ -19,12 +17,23 @@ function NavButton({IconImage, text, path, current, func}) {
     )
 }
 
-function Banner() {
+function Banner({premium}) {
+
     return (
         <div className="rounded-[12px] w-[90%] my-4 p-4 m-auto flex flex-col bg-green-700 shadow-md">
-            <p className="py-4 px-2 text-white font-bold text-[18px]/[26px]">
-                Upgrade your account to Get Free Voucher
-            </p>
+            {
+                premium !== null ?
+                    premium === false ?
+                    <p className="py-4 px-2 text-white font-bold text-[18px]/[26px]">
+                        Upgrade your account to get no delivery and service fees!
+                    </p>
+                    :
+                    <p className="py-4 px-2 text-white font-bold text-[18px]/[26px]">
+                        Thanks for subscribing, Enjoy your premium benefits!
+                    </p>
+                :
+                ""
+            }
             {/* <button className="py-2 px-4 flex items-start w-fit mt-4 bg-white rounded-md hover:bg-gray-300 active:bg-gray-600 active:text-white drop-shadow-md">
                 Upgrade
             </button> */}
@@ -33,6 +42,11 @@ function Banner() {
 }
 
 function NavSideBar() {
+    // global states
+    const { premium } = UseUserInfo((state) => ({
+        premium: state.premium,
+      }));
+
     const [NavSideBarShown, SetNavSideBarShown] = useState(false);
     const navSideBar = document.getElementById('navSideBar');
     const navSideBarOverlay = document.getElementById('navSideBarOverlay');
@@ -132,7 +146,7 @@ function NavSideBar() {
                 </div>
 
                 {/* nav bar banner container? */}
-                <Banner />
+                <Banner premium={premium} />
             </div>
         </div>
         

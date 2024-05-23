@@ -6,11 +6,17 @@ export const UseUserInfo = create((set) => ({
     balance: null,
     username: 'user',
     premium: null,
+    location: null,
+    latitude: null,
+    longitude: null,
 
     UpdateBalance: (balance) => set(() => ({ balance: balance})),
     UpdateUserId: (user_id) => set(() => ({ user_id: user_id})),
     UpdateUserName: (username) => set(() => ({ username: username})),
-    UpdatePremium: (premium) => set(() => ({ premium: premium}))
+    UpdatePremium: (premium) => set(() => ({ premium: premium})),
+    UpdateLocation: (location) => set(() => ({ location: location})),
+    UpdateLatitude: (latitude) => set(() => ({ latitude: latitude})),
+    UpdateLongitude: (longitude) => set(() => ({ longitude: longitude}))
 }))
 
 export const UsePositionInfo = create ((set) => ({

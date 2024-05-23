@@ -1,6 +1,7 @@
 import axios from "axios";
 import {React, useState} from "react";
 import LoadingOverlay from "./LoadingOverlay";
+import StarIcon from '@mui/icons-material/Star';
 import { wait } from "../utils/Functionabilities";
 import { BackendURL } from "../configs/GlobalVar";
 
@@ -17,45 +18,21 @@ function OrderItemList ({itemName, amount, price}) {
     )
 }
 
-function CompletedOrderCard ({order_id, restaurant_id, restaurant_name, total_price, order_data, status, RatingPopupOpen = () => {}}) {
+function CompletedOrderCard ({order_id, restaurant_id, restaurant_name, total_price, order_data, completed, status, rating, RatingPopupOpen = () => {}}) {
 
     const [Loading, SetLoading] = useState(false)
 
-//     const AcceptPendingOrder = async () => {
-//         SetLoading(true)
-//         axios.put(`${BackendURL}/accept_pending_order`, {
-//             id: order_id,
-//         })
-//         .then(async (response) => {
-//             if (response.data)
-//             {
-//                 await wait(3000)
-//                 SetLoading(false)
-//             }
-//         })
-//         .catch((error) => {
-//             console.log(error, 'error');
-//             SetLoading(false)
-//         });
-//     }
-
-//     const RejectPendingOrder = async () => {
-//         SetLoading(true)
-//         axios.put(`${BackendURL}/reject_pending_order`, {
-//             id: order_id,
-//         })
-//         .then(async (response) => {
-//             if (response.data)
-//             {
-//                 await wait(3000)
-//                 SetLoading(false)
-//             }
-//         })
-//         .catch((error) => {
-//             console.log(error, 'error');
-//             SetLoading(false)
-//         });
-//     }
+    const formatDate = (dateString) => {
+        const dateObj = new Date(dateString);
+        const day = dateObj.getDate().toString().padStart(2, '0');
+        const month = (dateObj.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-indexed
+        const year = dateObj.getFullYear();
+        const hours = dateObj.getHours().toString().padStart(2, '0');
+        const minutes = dateObj.getMinutes().toString().padStart(2, '0');
+    
+        const formattedString = `${day}/${month}/${year} - ${hours}:${minutes}`;
+        return formattedString;
+      };
 
     return (
         <div className="flex flex-row space-x-2 justify-between w-full bg-green-600 rounded-lg p-2">
@@ -71,9 +48,12 @@ function CompletedOrderCard ({order_id, restaurant_id, restaurant_name, total_pr
                 {/* order card information */}
                 <div className="flex flex-col space-y-2">
                     {/* username and distance*/}
-                    <div className="flex flex-row space-x-2">
-                        <p className="text-white line-clamp-1">{restaurant_name}</p>
-                        <p className="text-white font-bold"> {total_price}$</p>
+                    <div>
+                        <div className="flex flex-row space-x-2">
+                            <p className="text-white line-clamp-1">{restaurant_name}</p>
+                            <p className="text-white font-bold"> {total_price}$</p>
+                        </div>
+                        <p className="font-bold text-gray-800 text-opacity-100">{formatDate(completed)}</p>
                     </div>
 
                     <div>
@@ -101,7 +81,10 @@ function CompletedOrderCard ({order_id, restaurant_id, restaurant_name, total_pr
                             RATE
                         </button>
                         :
-                        ""
+                        <div className="flex flex-row items-center justify-center space-x-0.5">
+                            <StarIcon className="text-yellow-500" />
+                            <p className="font-bold text-white">{rating}</p>
+                        </div>
                 }
             </div>
         </div>

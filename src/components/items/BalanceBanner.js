@@ -3,21 +3,22 @@ import VerticalAlignTopOutlinedIcon from '@mui/icons-material/VerticalAlignTopOu
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import AccountBalanceWalletRoundedIcon from '@mui/icons-material/AccountBalanceWalletRounded';
 import { BackendURL } from "../configs/GlobalVar";
-import { useLocation } from "react-router-dom";
+import { wait } from "../utils/Functionabilities";
 import axios from "axios";
 import { UseUserInfo } from "../../store";
 
 function BalanceBanner () {
     // global states
-    const { balance } = UseUserInfo((state) => ({
-        balance: state.balance
+    const { user_id, balance, UpdateBalance } = UseUserInfo((state) => ({
+        user_id: state.user_id,
+        balance: state.balance,
+        UpdateBalance: state.UpdateBalance
     }));
 
     const [BalanceBarShown, SetBalanceBarShown] = useState(false);
+    const [Loading, SetLoading] = useState(false);
     const BalanceBar = document.getElementById('BalanceBar');
     const BalanceBarOverlay = document.getElementById('BalanceBarOverlay');
-
-
 
     const [matches, setMatches] = useState(
         window.matchMedia("(min-width: 1840px)").matches
@@ -25,6 +26,30 @@ function BalanceBanner () {
 
     const balanceBarToggleClicked = () => {
         SetBalanceBarShown(!BalanceBarShown);
+    }
+
+    const UpdateUserBalance = async (amount) => {
+        SetLoading(true)
+        await axios.put(`${BackendURL}/update_user_balance/`, {
+            id: user_id,
+            balance: amount
+        })
+        .then(async (response) => {
+            if (response.data["detail"] === "the balance is updated")
+            {
+                await wait(200);
+                SetLoading(false);
+                UpdateBalance(balance + amount);
+            }
+            else
+            {
+                SetLoading(false);
+            }
+        })
+        .catch((error) => {
+            console.log(error, 'error');
+            SetLoading(false)
+        });
     }
 
     useEffect(() => {
@@ -96,7 +121,7 @@ function BalanceBanner () {
                             <p> Balance </p>
                         </div>
                         <div className="sm:text-xl font-bold text-lg">
-                            <p> {balance} $ </p>
+                            <p> {`${Loading ? "loading...": `${balance}$`}`} </p>
                         </div>
                     </div>
 
@@ -105,9 +130,9 @@ function BalanceBanner () {
                         {/* buttonn */}
                         <div className="flex flex-col">
                             <div className="flex flex-row flex-[1] items-center justify-center">
-                                <div className="bg-white rounded-[8px] hover:bg-gray-300 active:bg-gray-400 p-1">
+                                <button onClick={() => {UpdateUserBalance(100)}} disabled={Loading ? true : false} className="bg-white rounded-[8px] hover:bg-gray-300 active:bg-gray-400 disabled:bg-gray-500 p-1">
                                     <VerticalAlignTopOutlinedIcon /> 
-                                </div>
+                                </button>
                             </div>
                             <div className="flex flex-row flex-[1] items-center justify-center"> 
                                 <div className="bg-white rounded-[8px] hover:bg-gray-300 active:bg-gray-400 p-1">

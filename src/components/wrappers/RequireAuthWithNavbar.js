@@ -8,11 +8,14 @@ import LoadingOverlay from '../items/LoadingOverlay';
 import { UseUserInfo } from '../../store';
 
 function RequireAuthWithNavbar({ notifyOrderAlreadyOrder = () => {}, notifyOrderSuccess = () => {}, notifyInsufficientBalance = () => {} , children }) {
-  const {UpdateUserId, UpdateUserName, UpdatePremium, UpdateBalance} = UseUserInfo((state) => ({
+  const {UpdateUserId, UpdateUserName, UpdatePremium, UpdateBalance, UpdateLocation, UpdateLatitude, UpdateLongitude} = UseUserInfo((state) => ({
     UpdateUserId: state.UpdateUserId,
     UpdateUserName: state.UpdateUserName,
     UpdatePremium: state.UpdatePremium,
-    UpdateBalance: state.UpdateBalance
+    UpdateBalance: state.UpdateBalance,
+    UpdateLocation: state.UpdateLocation,
+    UpdateLatitude: state.UpdateLatitude,
+    UpdateLongitude: state.UpdateLongitude
   }));
   const [initialCheckValue, setInitialCheckValue] = useState(true);
   const [actualCheckValue, setActualCheckValue] = useState(false);
@@ -70,9 +73,16 @@ function RequireAuthWithNavbar({ notifyOrderAlreadyOrder = () => {}, notifyOrder
           id: user_id
         })
         .then((res) => {
+          if (res.data[0]["location"] === "")
+          {
+            navigate("/location");
+          }
           UpdateUserName(res.data[0]['username']);
           UpdatePremium(res.data[0]['premium']);
-          UpdateBalance(res.data[0]["balance"])
+          UpdateBalance(res.data[0]["balance"]);
+          UpdateLocation(res.data[0]["location"]);
+          UpdateLatitude(res.data[0]["latitude"])
+          UpdateLongitude(res.data[0]["longitude"])
         })
         .catch((err) => {
           console.log(err, 'error')
