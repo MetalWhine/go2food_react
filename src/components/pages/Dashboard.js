@@ -182,7 +182,6 @@ function Dashboard ({notifyInsufficientBalance = () => {}, notifyPremiumUpdate =
                                 ]
                     res.push(arr)
                     }
-                    console.log(res)
                     SetListRestaurants(res);
                     SetFetchingData(false);
                 })
