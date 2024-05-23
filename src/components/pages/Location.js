@@ -1,12 +1,28 @@
 import { GoogleMap, MarkerF, useLoadScript } from '@react-google-maps/api';
 import React, { useEffect, useState } from 'react';
 import AutoCompletePlaces from '../maps/dropdown/useplaceautocomplete';
+import { useNavigate } from "react-router-dom";
+import { UseUserInfo } from '../../store';
+import { BackendURL } from '../configs/GlobalVar';
+import LoadingOverlay from '../items/LoadingOverlay';
+import { wait } from '../utils/Functionabilities';
+import axios from 'axios';
 
-export default function Location() {
+export default function Location({notifySuccessLocationUpdate = () => {}, notifyFailedLocationUpdate = () => {}}) {
+    // global states
+    const {user_id, UpdateLocation, UpdateLatitude, UpdateLongitude} = UseUserInfo((state) => ({
+        user_id: state.user_id,
+        UpdateLocation: state.UpdateLocation,
+        UpdateLatitude: state.UpdateLatitude,
+        UpdateLongitude: state.UpdateLongitude
+      }));
+
+    // local states
     const [center, setcenter] = useState({ lat: -34.405714, lng: 150.877724 });
     const [selectedLoc, setselectedLoc] = useState({ lat: 0, lng: 0 });
     const [selectedLocName, setselectedLocName] = useState("");
     const [isLoading, setisLoading] = useState(false);
+    const navigate = useNavigate();
     
     // tinker with this to show loading and toast when saving/saving to db complete 
     // or something idk
@@ -65,10 +81,39 @@ export default function Location() {
 
     const saveToDb = async (e) => {
         e.preventDefault();
+        setissavingToDb(true)
+        await axios.put(`${BackendURL}/update_user_location_and_latlong/`, {
+            id: user_id,
+            location: selectedLocName,
+            latitude: selectedLoc.lat,
+            longitude: selectedLoc.lng
+        })
+        .then(async (response) => {
+            if (response.data["detail"] === "succesfully set the user's location and lat long")
+            {
+                await wait(200);
+                UpdateLocation(selectedLocName)
+                UpdateLatitude(selectedLoc.lat)
+                UpdateLongitude(selectedLoc.lng)
+                setissavingToDb(false);
+                notifySuccessLocationUpdate();
+                navigate("/");
+            }
+            else
+            {
+                setissavingToDb(false);
+                notifyFailedLocationUpdate();
+            }
+        })
+        .catch((error) => {
+            console.log(error, 'error');
+            setissavingToDb(false)
+        });
     }
 
     return (
         <div id='parent_container_location' className='p-5 flex flex-col items-center space-y-6'>
+            {issavingToDb ? <LoadingOverlay /> : ""}
             <div className='space-y-0 w-3/4 p-2'>
                 <h1 className='font-bold text-xl'>Set your address</h1>
                 <p className='text-sm'>Set your address so we know where we should send your order to</p>

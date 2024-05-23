@@ -2,9 +2,8 @@ import {React, useState, useEffect} from "react";
 import { useParams } from "react-router-dom";
 import LoadingOverlay from "../items/LoadingOverlay";
 import { BackendURL } from "../configs/GlobalVar";
-import { UsePositionInfo } from "../../store";
+import { UseUserInfo } from "../../store";
 import MenuCard from "../items/MenuCard";
-import { useLocation } from "react-router-dom";
 import axios from "axios";
 
 function CategoryImage ({category}) {
@@ -15,34 +14,21 @@ function CategoryImage ({category}) {
 
 function Restaurant () {
     // global states
-    const {latitude, longitude, UpdateLatitude, UpdateLongitude} = UsePositionInfo((state) => ({
+    const { location, latitude, longitude} = UseUserInfo((state) => ({
+        location: state.location,
         latitude: state.latitude,
         longitude: state.longitude,
-        UpdateLatitude: state.UpdateLatitude,
-        UpdateLongitude: state.UpdateLongitude
       }));
 
     // local states
-    let location = useLocation()
     const restaurant_id = useParams()
     const [loading, SetLoading] = useState(false)
     const [restaurantData, SetRestaurantData] = useState([])
     const [menuData, SetMenuData] = useState([])
-    const [locUpdated, SetLocUpdated] = useState(false)
-
-
-    // functions
-    useEffect(() => {
-        navigator.geolocation.getCurrentPosition((pos) => {
-            UpdateLongitude(pos.coords.longitude);
-            UpdateLatitude(pos.coords.latitude);
-            SetLocUpdated(true)
-        })
-    }, [location])
 
     const GetRestaurantData = () => {
         SetLoading(true)
-        if (locUpdated)
+        if (latitude)
         {
 
             axios.post(`${BackendURL}/get_restaurant_byId/`, {
@@ -76,7 +62,7 @@ function Restaurant () {
     useEffect(() => {
         GetRestaurantData()
         GetMenuData()
-    }, [restaurant_id, locUpdated])
+    }, [restaurant_id, latitude])
 
 
     

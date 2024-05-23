@@ -3,7 +3,6 @@ import CommentOutlinedIcon from '@mui/icons-material/CommentOutlined';
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import MoreVertOutlinedIcon from '@mui/icons-material/MoreVertOutlined';
-import Cookies from "universal-cookie";
 
 function IconButton ({IconImage}) {
     return (
@@ -21,8 +20,6 @@ const icon_buttons = [[CommentOutlinedIcon],
                       [NotificationsOutlinedIcon],
                       [SettingsOutlinedIcon]
                       ]
-
-const cookies = new Cookies();
 
 function Appbar() {
     const [IconButtonSmallShown, SetIconButtonSmallShown] = useState(false);
@@ -69,7 +66,7 @@ function Appbar() {
                 </div>
 
                 <div className="p-2">
-                    <img onClick={() => {cookies.remove('jwt_auth', { path: '/' });}} className="min-h-10 min-w-10 max-w-12 max-h-12 rounded-md" src={"/images/profile_picture_default.jpg"} alt="Rounded avatar"></img>
+                    <img className="min-h-10 min-w-10 max-w-12 max-h-12 rounded-md" src={"/images/profile_picture_default.jpg"} alt="Rounded avatar"></img>
                 </div>
 
                 {/* container of drop down menu items accessibe when screen is small */}
