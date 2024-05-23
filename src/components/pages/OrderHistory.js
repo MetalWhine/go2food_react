@@ -219,7 +219,7 @@ function OrderHistory () {
                 </div>
             </div>
             {
-                CompletedOrders === null ?
+                !CompletedOrders ?
                     <div className="top-[-72px]"><LoadingOverlay/></div>
                     :
                     CompletedOrders.length === 0 ?
